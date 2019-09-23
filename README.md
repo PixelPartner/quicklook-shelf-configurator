@@ -1,22 +1,16 @@
-# elm-3d-scene
+# quicklook-shelf-configurator
 
-`elm-3d-scene` is a high-level Elm package for producing 3D graphics. It aims to
-make creating 3D graphics as easy and enjoyable as possible, without having to
-worry about low-level details like shader programs and transformation matrices
-but still including powerful features such as:
+This repository is a fork of [elm-3d-scene](https://github.com/ianmackenzie/elm-3d-scene) by **@ianmackenzie**, a high-level Elm package for producing 3D graphics.
 
-- Efficient animated transformations
-- Physically-based materials
-- Multiple light sources
-- Accurate shadows
+It adds an example WebApp to the engine's example folder (`examples/IvarConfig.elm` and `examples/IvarConfig.html`) that features a **sample WebGL product configurator** including the ability to preview the product in AR (Augmented Reality) with **Apple AR Quicklook**, a feature available on macOS 10.15+ and iOS 12+. 
 
-The documentation for `elm-3d-scene` (including this README!) is still being
-worked on, but once that is done (soon!) it will be published as a normal Elm
-package. In the meantime, you can try out the package by checking out this
-repository and then firing up `elm reactor` in [the examples
-folder](https://github.com/ianmackenzie/elm-3d-scene/tree/master/examples).
+# Disclaimer:
 
-Any questions/feedback, please open an issue or reach out to **@ianmackenzie**
+The product to configure looks like a well known IKEA shelf family called IVAR, but it's not affiliated with IKEA and is not guaranteed to fit your room. To configure a shelf was choosen to proof it's flexibility.
+
+Any questions/feedback to this fork, please open an issue or reach out to **@pixelpartner**
 on the [Elm Slack](https://elmlang.herokuapp.com)!
 
-![Physics simulation](https://ianmackenzie.github.io/elm-3d-scene/images/1.0.0/physics-background.png)
+![WebApp screenshot](https://github.com/pixelpartner/quicklokk-shelf-configurator/IvarConfig_WebApp.jpg)
+![Quicklook 3D screenshot](https://github.com/pixelpartner/quicklokk-shelf-configurator/IvarConfig_3D.jpg)
+![Quicklook AR screenshot](https://github.com/pixelpartner/quicklokk-shelf-configurator/IvarConfig_AR.jpg)
