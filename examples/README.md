@@ -21,7 +21,7 @@ on the [Elm Slack](https://elmlang.herokuapp.com).
 
 ## New hero example: `IvarConfig.elm/html`
 
-I (@pixelpartner) extended the beta package repository be a bloated example that became a full blown WebApp. It will need mayor refacturing when the main package by **@ianmackenzie** has been released.
+I (@pixelpartner) extended the beta package repository by a bloated example that became a full blown WebApp. It will need mayor refacturing when the main package by **@ianmackenzie** has been released.
 Meanwhile, you may live with several added dependencies in `examples/elm.json`, only needed for this sample product configurator and an altered way to make it.
 
 Don't use the reactor, but compile with:
