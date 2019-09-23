@@ -22,7 +22,7 @@ The elm WebApp lets you configure a shelf in a WebGL view. In any phase you can 
 
 * this is then converted to a binary USDC file and archived together with a 4k wood texture as an USDZ file. For this to work, you will also need the backend repository [USDZerve](https://github.com/PixelPartner/USDZerve)
 
-* this USDZ file can then be downloaded by either clicking the freshly appread AR icon or using the QRCode presented on the left. 
+* this USDZ file can then be downloaded by either clicking the then freshly appeared AR icon or using the QRCode presented on the left. 
 
 # Feedback
 
