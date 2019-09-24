@@ -7,6 +7,7 @@ import Browser.Events
 import Camera3d exposing (Camera3d)
 import Color
 import Direction3d exposing (Direction3d)
+import Frame3d
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events exposing (..)
@@ -18,7 +19,7 @@ import Json.Decode as Decode exposing (Decoder)
 import Length exposing (Meters, meters, centimeters)
 import Pixels exposing (pixels)
 import Point2d
-import Point3d
+import Point3d exposing (Point3d)
 import Quantity
 import Scene3d
 import Scene3d.Chromaticity as Chromaticity
@@ -632,7 +633,7 @@ exportPoints points =
     ( "[" ++ String.join ", " pointList ++ "]" )
 
 
-exportStand : String -> (Bool, Float, Float) -> IvarHeight -> IvarDepth -> Vector3d Meters World -> String
+exportStand : String -> (Bool, Float, Float) -> IvarHeight -> IvarDepth -> Point3d Meters World -> String
 exportStand name (doMirror, sOffset, tOffset) ih id pos =
     let
         -- our sample set of st values was made for the tall stand with headroom for t-Offsets up to +/0.1
@@ -697,7 +698,7 @@ exportStand name (doMirror, sOffset, tOffset) ih id pos =
             , (0.668344, t1), (0.66205, t1), (0.66205, tMin), (0.668344, tMin)
             ]
 
-        v = Vector3d.toRecord Length.inCentimeters pos -- USD normally works in centimeters
+        v = Point3d.toRecord Length.inCentimeters pos -- USD normally works in centimeters
 
         vStr = String.fromFloat v.x ++ ", "++ String.fromFloat v.z ++ ", "++ String.fromFloat v.y -- note the flip of Y and Z
 
@@ -737,7 +738,7 @@ def Xform """ ++ ("\"") ++ name ++ ("\"") ++"""
 """
 
 
-exportPlate : String -> (Bool, Float, Float) -> IvarWidth -> IvarDepth -> Vector3d Meters World -> String
+exportPlate : String -> (Bool, Float, Float) -> IvarWidth -> IvarDepth -> Point3d Meters World -> String
 exportPlate name (doMirror, sOffset, tOffset) iw id pos =
     let
         ( d, sScale ) = 
@@ -763,7 +764,7 @@ exportPlate name (doMirror, sOffset, tOffset) iw id pos =
                 , (0.39185,  0.23776299), (0.403856, 0.23776299), (0.403856, 0.762237  ), (0.39185 , 0.762237)
                 ]
 
-        v = Vector3d.toRecord Length.inCentimeters pos -- USD normally works in centimeters
+        v = Point3d.toRecord Length.inCentimeters pos -- USD normally works in centimeters
 
         vStr = String.fromFloat v.x ++ ", "++ String.fromFloat v.z ++ ", "++ String.fromFloat v.y -- note the flip of Y and Z
 
@@ -804,7 +805,7 @@ def Xform """ ++ ("\"") ++ name ++ ("\"") ++"""
 """
 
 
-exportItem : Int -> IvarHeight -> IvarDepth -> Vector3d Meters World -> (Bool, Float, Float) -> Angle -> Ivar -> List String
+exportItem : Int -> IvarHeight -> IvarDepth -> Point3d Meters World -> (Bool, Float, Float) -> Angle -> Ivar -> List String
 exportItem colIdx h d columnPosition (doMirror, sOffset, tOffset) angle item =
     case item of
         IvarColumn _ iw _ slots ->
@@ -824,7 +825,8 @@ exportItem colIdx h d columnPosition (doMirror, sOffset, tOffset) angle item =
                             _ -> (doMirror, sOffset, tOffset)
                         )
                         iw d 
-                        (Vector3d.plus columnPosition (Vector3d.centimeters 0 0 ((toFloat slot+1) * 3.2)))
+                        (Point3d.translateBy (Vector3d.centimeters 0 0 ((toFloat slot+1) * 3.2)) columnPosition )
+                        --(Vector3d.plus columnPosition (Vector3d.centimeters 0 0 ((toFloat slot+1) * 3.2)))
                 )
               (List.indexedMap Tuple.pair slots)
             )
@@ -845,11 +847,11 @@ exportScene model =
                             case item of
                                 IvarColumn ih Wide _ _ -> 
                                     ( maxIvarHeight ih state.maxHeight
-                                    , State (Vector3d.plus state.pos (Vector3d.centimeters (83.0+1.0) 0 0)) nextSeed (Angle.degrees 0) ih False
+                                    , State (Point3d.translateBy (Vector3d.centimeters (83.0+1.0) 0 0) state.pos) nextSeed (Angle.degrees 0) ih False
                                     )
                                 IvarColumn ih Narrow _ _ -> 
                                     ( maxIvarHeight ih state.maxHeight
-                                    , State (Vector3d.plus state.pos (Vector3d.centimeters (42.0+1.0) 0 0)) nextSeed (Angle.degrees 0) ih False
+                                    , State (Point3d.translateBy (Vector3d.centimeters (42.0+1.0) 0 0) state.pos) nextSeed (Angle.degrees 0) ih False
                                     )
                                 IvarCorner ih it _ _ -> 
                                     ( maxIvarHeight ih state.maxHeight
@@ -858,7 +860,7 @@ exportScene model =
                     in
                     (nextState, exportItem idx currHeight model.depth state.pos (doMirror, sOffset, tOffset) state.angle item)
                 )
-                ( State Vector3d.zero model.currentSeed (Angle.degrees 0) Small False )
+                ( State Point3d.origin model.currentSeed (Angle.degrees 0) Small False )
                 ( List.indexedMap Tuple.pair model.basket )
 
         prolog = """#usda 1.0
@@ -898,21 +900,20 @@ def Xform "ivar" (
                     def Xform "Wood_grp"
                     {
 """
+        placeOffset = 
+            Vector3d.from 
+                ( Point3d.centimeters 0
+                    -( case model.depth of
+                        Shallow -> 30.0
+                        Deep -> 50.0
+                    )
+                    0
+                )
+                endState.pos
+                |> Vector3d.scaleBy -0.5
         place = -- center the group of items
             Vector3d.toRecord Length.inCentimeters -- USD normally works in centimeters
-                ( Vector3d.scaleBy -0.5 
-                    ( Vector3d.plus 
-                        ( Vector3d.centimeters 
-                            0
-                            ( case model.depth of
-                                Shallow -> 30.0
-                                Deep -> 50.0
-                            )
-                            0
-                        ) 
-                        endState.pos
-                    )
-                )
+                placeOffset
         -- note the flip of Y and Z while placing the group of items
         epilog = """
                         matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (""" ++ String.fromFloat place.x ++ ", "++ String.fromFloat place.z ++ ", "++ String.fromFloat place.y ++ """, 1) )
@@ -999,10 +1000,10 @@ floor =
     Drawable.physical 
         { baseColor = Color.white, roughness = 0.25, metallic = False }
         floorMesh
-        |> Drawable.translateBy (Vector3d.meters 0 0 -0.01)
+        |> Drawable.placeIn (Frame3d.atPoint (Point3d.meters 0 0 -0.01))
 
 
-ivarPlate : IvarWidth -> IvarDepth -> Vector3d Meters World -> Angle -> Color.Color -> Int -> Drawable World
+ivarPlate : IvarWidth -> IvarDepth -> Point3d Meters World -> Angle -> Color.Color -> Int -> Drawable World
 ivarPlate iw id columnPosition angle color slot = 
     let
         (w, offset) = case iw of
@@ -1023,13 +1024,13 @@ ivarPlate iw id columnPosition angle color slot =
         { baseColor = color, roughness = 0.8, metallic = False } 
         plateMesh
             |> Drawable.withShadow plateMesh
-            |> Drawable.translateBy columnPosition
+            |> Drawable.placeIn (Frame3d.atPoint columnPosition)
             |> Drawable.translateIn Direction3d.positiveX offset
             |> Drawable.translateIn Direction3d.positiveZ (Length.centimeters ((toFloat slot+1) * 3.2))
             --|> Drawable.rotateAround Direction3d.positiveZ angle
 
 
-ivarStand : IvarHeight -> IvarDepth -> Vector3d Meters World -> Angle -> Color.Color -> List (Drawable World)
+ivarStand : IvarHeight -> IvarDepth -> Point3d Meters World -> Angle -> Color.Color -> List (Drawable World)
 ivarStand ih id columnPosition angle color =
     let
         w1 = Length.centimeters 2.0
@@ -1050,31 +1051,30 @@ ivarStand ih id columnPosition angle color =
         poleMesh  = Shape.block w2 d1 h  |> Mesh.enableShadows
         stickMesh = Shape.block w1 pd hs |> Mesh.enableShadows
         mat = { baseColor = color, roughness = 0.8, metallic = False }
+        frame = Frame3d.atPoint columnPosition
     in
     [ Drawable.physical mat poleMesh
         |> Drawable.withShadow poleMesh
-        |> Drawable.translateBy columnPosition
+        |> Drawable.placeIn frame --|> Drawable.translateBy columnPosition
         |> Drawable.translateIn Direction3d.negativeY pd2
         |> Drawable.translateIn Direction3d.positiveZ h2
-        --|> Drawable.rotateAround (Axis3d.placeIn ) angle
     , Drawable.physical mat poleMesh
         |> Drawable.withShadow poleMesh
-        |> Drawable.translateBy columnPosition
+        |> Drawable.placeIn frame --|> Drawable.translateBy columnPosition
         |> Drawable.translateIn Direction3d.positiveY pd2
         |> Drawable.translateIn Direction3d.positiveZ h2
-        --|> Drawable.rotateAround Direction3d.positiveZ angle
     , Drawable.physical mat stickMesh
         |> Drawable.withShadow stickMesh
-        |> Drawable.translateBy columnPosition
+        |> Drawable.placeIn frame --|> Drawable.translateBy columnPosition
         |> Drawable.translateIn Direction3d.positiveZ zTop
     , Drawable.physical mat stickMesh
         |> Drawable.withShadow stickMesh
-        |> Drawable.translateBy columnPosition
+        |> Drawable.placeIn frame --|> Drawable.translateBy columnPosition
         |> Drawable.translateIn Direction3d.positiveZ zBottom
     ]
 
 
-drawItem : Bool -> IvarHeight -> IvarDepth -> Vector3d Meters World -> Angle -> Ivar -> List (Drawable World)
+drawItem : Bool -> IvarHeight -> IvarDepth -> Point3d Meters World -> Angle -> Ivar -> List (Drawable World)
 drawItem isSelected h d columnPosition angle item =
     case item of
         IvarColumn _ iw selSlot slots ->
@@ -1131,7 +1131,7 @@ maxIvarHeight h1 h2 =
 
 
 type alias State =
-    { pos : Vector3d Meters World
+    { pos : Point3d Meters World
     , seed : Seed
     , angle : Angle
     , maxHeight : IvarHeight
@@ -1267,11 +1267,11 @@ view model =
                             case item of
                                 IvarColumn ih Wide   _ _ -> 
                                     ( maxIvarHeight ih state.maxHeight
-                                    , State (Vector3d.plus state.pos (Vector3d.centimeters (83.0+1.0) 0 0)) model.currentSeed (Angle.degrees 0) ih isSelected
+                                    , State (Point3d.translateBy (Vector3d.centimeters (83.0+1.0) 0 0) state.pos) model.currentSeed (Angle.degrees 0) ih isSelected
                                     )
                                 IvarColumn ih Narrow _ _ -> 
                                     ( maxIvarHeight ih state.maxHeight
-                                    , State (Vector3d.plus state.pos (Vector3d.centimeters (42.0+1.0) 0 0)) model.currentSeed (Angle.degrees 0) ih isSelected
+                                    , State (Point3d.translateBy (Vector3d.centimeters (42.0+1.0) 0 0) state.pos) model.currentSeed (Angle.degrees 0) ih isSelected
                                     )
                                 IvarCorner ih it     _ _ -> 
                                     ( maxIvarHeight ih state.maxHeight
@@ -1280,13 +1280,18 @@ view model =
                     in
                     (nextState, drawItem isSelected currHeight model.depth state.pos state.angle item)
                 )
-                ( State Vector3d.zero model.currentSeed (Angle.degrees 0) Small False )
+                ( State Point3d.origin model.currentSeed (Angle.degrees 0) Small False )
                 ( List.indexedMap Tuple.pair model.basket )
-
+        placeOffset = 
+            Vector3d.from 
+                Point3d.origin
+                endState.pos
+                |> Vector3d.scaleBy -0.5
         drawnItemsWithLastStand =
             Drawable.group ( List.concat 
                 ((ivarStand endState.maxHeight model.depth endState.pos endState.angle (if endState.isSelected then highlightColumnColor else itemColor)):: drawnItems )
-            ) |> Drawable.translateBy (Vector3d.scaleBy -0.5 endState.pos)
+            ) 
+            |> Drawable.translateBy placeOffset
 
         {-
         eye =
