@@ -1263,22 +1263,25 @@ view model =
                 (\state (i,item) ->
                     let
                         isSelected = (model.columnSelected == Just i)
-                        (currHeight, nextState) =
+                        ( currHeight, nextState ) =
                             case item of
-                                IvarColumn ih Wide   _ _ -> 
+                                IvarColumn ih width _ _ ->
+                                    let
+                                        w = case width of
+                                            Wide -> 83.0
+                                            Narrow -> 42.0
+                                        nextPoint =
+                                            Point3d.translateBy (Vector3d.centimeters (w+1.0) 0 0) state.pos
+                                    in
                                     ( maxIvarHeight ih state.maxHeight
-                                    , State (Point3d.translateBy (Vector3d.centimeters (83.0+1.0) 0 0) state.pos) model.currentSeed (Angle.degrees 0) ih isSelected
-                                    )
-                                IvarColumn ih Narrow _ _ -> 
-                                    ( maxIvarHeight ih state.maxHeight
-                                    , State (Point3d.translateBy (Vector3d.centimeters (42.0+1.0) 0 0) state.pos) model.currentSeed (Angle.degrees 0) ih isSelected
+                                    , State nextPoint model.currentSeed (Angle.degrees 0) ih isSelected
                                     )
                                 IvarCorner ih it     _ _ -> 
                                     ( maxIvarHeight ih state.maxHeight
-                                    , State state.pos model.currentSeed(Angle.degrees 0) ih isSelected
+                                    , State state.pos model.currentSeed (Angle.degrees 0) ih isSelected
                                     )
                     in
-                    (nextState, drawItem isSelected currHeight model.depth state.pos state.angle item)
+                    ( nextState, drawItem isSelected currHeight model.depth state.pos state.angle item )
                 )
                 ( State Point3d.origin model.currentSeed (Angle.degrees 0) Small False )
                 ( List.indexedMap Tuple.pair model.basket )
