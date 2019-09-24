@@ -69,17 +69,40 @@ type alias Flags =
 
 
 type IvarWidth
-  = Narrow  -- 42
-  | Wide    -- 83
+  = Narrow
+  | Wide
+
+widthInCm : IvarWidth -> Float
+widthInCm iw =
+    case iw of
+        Narrow -> 42.0
+        Wide -> 83.0
+
+gap = 1.0
+
 
 type IvarDepth
-  = Shallow -- 30
-  | Deep    -- 50
+  = Shallow 
+  | Deep
+
+depthInCm : IvarDepth -> Float
+depthInCm id =
+    case id of
+        Shallow -> 30.0
+        Deep -> 50.0
 
 type IvarHeight
-  = Tall   -- 226
-  | Medium -- 179
-  | Small  -- 124
+  = Tall
+  | Medium
+  | Small
+
+heightInCm : IvarHeight -> Float
+heightInCm ih =
+    case ih of
+        Small -> 124.0
+        Medium -> 179.0
+        Tall -> 226.0
+
 
 type IvarTurn
   = TurnLeft
@@ -108,7 +131,6 @@ newColumn h w =
     Tall   -> IvarColumn h w 0 [ 0, 12, 24, 37, 54, 69 ]
     Medium -> IvarColumn h w 0 [ 0, 12, 24, 37, 54 ]
     Small  -> IvarColumn h w 0 [ 0, 12, 24, 37 ]
-
 
 {-| Returns `Just` the element at the given index in the list,
 or `Nothing` if the index is out of range.
@@ -643,13 +665,10 @@ exportStand name (doMirror, sOffset, tOffset) ih id pos =
         t3 = 0.35790002
         tMax = 0.894095
  
-        maxY =
-            case ih of 
-                Small   -> 124.0
-                Medium  -> 179.0
-                Tall    -> 226.0
+        maxY = heightInCm ih
+        maxHeight = heightInCm Tall
 
-        t4 = ((tMax-tMin)/226.0*maxY)+tMin 
+        t4 = ((tMax-tMin)/maxHeight*maxY)+tMin 
 
         (zOffset, sScale) = 
             case id of
@@ -1006,15 +1025,12 @@ floor =
 ivarPlate : IvarWidth -> IvarDepth -> Point3d Meters World -> Angle -> Color.Color -> Int -> Drawable World
 ivarPlate iw id columnPosition angle color slot = 
     let
-        (w, offset) = case iw of
-            Wide   -> (Length.centimeters 83.0, Length.centimeters ((83.0+1.0)/2.0))
-            Narrow -> (Length.centimeters 42.0, Length.centimeters ((42.0+1.0)/2.0))
+        wInCm = widthInCm iw
+        (w, offset) = (Length.centimeters wInCm, Length.centimeters ((wInCm+gap)/2.0))
 
         hi = Length.centimeters 2.0
 
-        d = case id of
-            Shallow -> Length.centimeters 30.0
-            Deep -> Length.centimeters 50.0
+        d = Length.centimeters (depthInCm id)
 
         plateMesh = 
             Shape.block w d hi 
@@ -1036,18 +1052,12 @@ ivarStand ih id columnPosition angle color =
         w1 = Length.centimeters 2.0
         w2 = Length.centimeters 3.5
         hs = Length.centimeters 4.0
-        (h, h2) = case ih of
-            Tall   -> (Length.centimeters 226.0, Length.centimeters 113.0)
-            Medium -> (Length.centimeters 179.0, Length.centimeters  89.5)
-            Small  -> (Length.centimeters 124.0, Length.centimeters  62.0)
-        (zBottom, zTop) = case ih of
-            Tall   -> (Length.centimeters 12.0, Length.centimeters 218.0)
-            Medium -> (Length.centimeters 12.0, Length.centimeters 171.0)
-            Small  -> (Length.centimeters 12.0, Length.centimeters 116.0)
+        hInCm = heightInCm ih
+        (h, h2) = (Length.centimeters hInCm, Length.centimeters (hInCm/2.0))
+        (zBottom, zTop) = (Length.centimeters 12.0, Length.centimeters (hInCm-8.0))
         d1 = Length.centimeters 2.0
-        (pd, pd2) = case id of 
-            Shallow -> (Length.centimeters 30.0, Length.centimeters (15.0 + 1.0))
-            Deep    -> (Length.centimeters 50.0, Length.centimeters (25.0 + 1.0))
+        d = depthInCm id
+        (pd, pd2) = (Length.centimeters d, Length.centimeters ((d/2.0) + gap))
         poleMesh  = Shape.block w2 d1 h  |> Mesh.enableShadows
         stickMesh = Shape.block w1 pd hs |> Mesh.enableShadows
         mat = { baseColor = color, roughness = 0.8, metallic = False }
@@ -1055,21 +1065,21 @@ ivarStand ih id columnPosition angle color =
     in
     [ Drawable.physical mat poleMesh
         |> Drawable.withShadow poleMesh
-        |> Drawable.placeIn frame --|> Drawable.translateBy columnPosition
+        |> Drawable.placeIn frame
         |> Drawable.translateIn Direction3d.negativeY pd2
         |> Drawable.translateIn Direction3d.positiveZ h2
     , Drawable.physical mat poleMesh
         |> Drawable.withShadow poleMesh
-        |> Drawable.placeIn frame --|> Drawable.translateBy columnPosition
+        |> Drawable.placeIn frame
         |> Drawable.translateIn Direction3d.positiveY pd2
         |> Drawable.translateIn Direction3d.positiveZ h2
     , Drawable.physical mat stickMesh
         |> Drawable.withShadow stickMesh
-        |> Drawable.placeIn frame --|> Drawable.translateBy columnPosition
+        |> Drawable.placeIn frame
         |> Drawable.translateIn Direction3d.positiveZ zTop
     , Drawable.physical mat stickMesh
         |> Drawable.withShadow stickMesh
-        |> Drawable.placeIn frame --|> Drawable.translateBy columnPosition
+        |> Drawable.placeIn frame
         |> Drawable.translateIn Direction3d.positiveZ zBottom
     ]
 
