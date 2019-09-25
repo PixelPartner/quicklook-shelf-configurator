@@ -78,7 +78,12 @@ widthInCm iw =
         Narrow -> 42.0
         Wide -> 83.0
 
-gap = 1.0
+
+gapInCm = 1.0
+
+plateHeight = Length.centimeters 2.0
+
+slotStepInCm = 3.2
 
 
 type IvarDepth
@@ -90,6 +95,7 @@ depthInCm id =
     case id of
         Shallow -> 30.0
         Deep -> 50.0
+
 
 type IvarHeight
   = Tall
@@ -844,7 +850,7 @@ exportItem colIdx h d columnPosition (doMirror, sOffset, tOffset) angle item =
                             _ -> (doMirror, sOffset, tOffset)
                         )
                         iw d 
-                        (Point3d.translateBy (Vector3d.centimeters 0 0 ((toFloat slot+1) * 3.2)) columnPosition )
+                        (Point3d.translateBy (Vector3d.centimeters 0 0 ((toFloat slot+1) * slotStepInCm)) columnPosition )
                         --(Vector3d.plus columnPosition (Vector3d.centimeters 0 0 ((toFloat slot+1) * 3.2)))
                 )
               (List.indexedMap Tuple.pair slots)
@@ -1026,14 +1032,10 @@ ivarPlate : IvarWidth -> IvarDepth -> Point3d Meters World -> Angle -> Color.Col
 ivarPlate iw id columnPosition angle color slot = 
     let
         wInCm = widthInCm iw
-        (w, offset) = (Length.centimeters wInCm, Length.centimeters ((wInCm+gap)/2.0))
-
-        hi = Length.centimeters 2.0
-
-        d = Length.centimeters (depthInCm id)
-
+        w = Length.centimeters wInCm
+        offset = Length.centimeters ((wInCm + gapInCm)/2.0)
         plateMesh = 
-            Shape.block w d hi 
+            Shape.block w (Length.centimeters (depthInCm id)) plateHeight 
                 |> Mesh.enableShadows
     in
     Drawable.physical 
@@ -1042,7 +1044,7 @@ ivarPlate iw id columnPosition angle color slot =
             |> Drawable.withShadow plateMesh
             |> Drawable.placeIn (Frame3d.atPoint columnPosition)
             |> Drawable.translateIn Direction3d.positiveX offset
-            |> Drawable.translateIn Direction3d.positiveZ (Length.centimeters ((toFloat slot+1) * 3.2))
+            |> Drawable.translateIn Direction3d.positiveZ (Length.centimeters ((toFloat slot+1) * slotStepInCm))
             --|> Drawable.rotateAround Direction3d.positiveZ angle
 
 
@@ -1057,7 +1059,7 @@ ivarStand ih id columnPosition angle color =
         (zBottom, zTop) = (Length.centimeters 12.0, Length.centimeters (hInCm-8.0))
         d1 = Length.centimeters 2.0
         d = depthInCm id
-        (pd, pd2) = (Length.centimeters d, Length.centimeters ((d/2.0) + gap))
+        (pd, pd2) = (Length.centimeters d, Length.centimeters ((d/2.0) + gapInCm))
         poleMesh  = Shape.block w2 d1 h  |> Mesh.enableShadows
         stickMesh = Shape.block w1 pd hs |> Mesh.enableShadows
         mat = { baseColor = color, roughness = 0.8, metallic = False }
