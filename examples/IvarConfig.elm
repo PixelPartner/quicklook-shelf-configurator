@@ -214,6 +214,7 @@ type alias Model =
     , baseUrl : String
     , downloadUrl : String
     , basket : List Ivar
+    , world : List (Drawable World)
     , columnSelected : Maybe Int
     , futureHeight : IvarHeight
     , futureWidth : IvarWidth
@@ -228,8 +229,7 @@ type Msg
     | Export
     | ClearDownloadUrl
     | GotUrl (Result Http.Error String)
-    | SetFutureHeight IvarHeight
-    | SetFutureWidth IvarWidth
+    -- the following Messages need to also re-popluateWorld 
     | ToggleDepth
     | AddLeft Ivar 
     | AddRight Ivar
@@ -252,24 +252,31 @@ supportsArKit ua =
 
 init : Flags -> (Model, Cmd Msg)
 init flags =
+    let
+        newBasket = -- offer a shelf with 3 different columns prepopulated with plates at top and bottom
+            [ IvarColumn Tall   Wide   0 [3,         maxSlot Tall   ] 
+            , IvarColumn Medium Narrow 0 [3, 15, 25, maxSlot Medium ]
+            , IvarColumn Small  Wide   0 [3,         maxSlot Small  ]
+            ]
+        startSeed = initialSeed flags.seed flags.seedExtension
+        startDepth = Shallow
+        startColumn = Just 1
+    in
     ( { azimuth = Angle.degrees 235
       , elevation = Angle.degrees 30
       , orbiting = False
       , supportsArKit = supportsArKit flags.userAgent
       , lastError = Nothing
-      , currentSeed = initialSeed flags.seed flags.seedExtension
+      , currentSeed = startSeed
       , currentUuid = Nothing
       , baseUrl = "http://quicklook.yourdomain.com" -- change this to your own domain, running an instance of the USDZerve backend
       , downloadUrl = ""
-      , basket = -- offer a shelf with 3 different columns prepopulated with plates at top and bottom
-        [ IvarColumn Tall   Wide   0 [3,         maxSlot Tall   ] 
-        , IvarColumn Medium Narrow 0 [3, 15, 25, maxSlot Medium ]
-        , IvarColumn Small  Wide   0 [3,         maxSlot Small  ]
-        ]
-      , columnSelected = Just 1 -- select middle column
+      , basket = newBasket 
+      , world = populateWorld startColumn startSeed startDepth newBasket
+      , columnSelected = startColumn -- select middle column
       , futureHeight = Medium -- make added columns of medium height
       , futureWidth = Wide -- make added columns default to wide
-      , depth = Shallow
+      , depth = startDepth
       }
     , Cmd.none
     )
@@ -331,54 +338,71 @@ update message model =
             , Cmd.none
             )
 
-        SetFutureHeight fH ->
-            ( { model | futureHeight = fH }
-            , Cmd.none 
-            )
-
-        SetFutureWidth fW ->
-            ( { model | futureWidth = fW }
-            , Cmd.none
-            )
-
         ToggleDepth ->
-            ( { model | depth = if model.depth == Deep then Shallow else Deep }
+            let
+                newDepth = if model.depth == Deep then Shallow else Deep
+            in
+            ( { model
+              | depth = newDepth 
+              , world = populateWorld model.columnSelected model.currentSeed newDepth model.basket
+              }
             , Cmd.none
             )
 
         AddRight item ->
-            ( { model 
-              | basket = model.basket ++ [item]
-              , columnSelected = Just (List.length model.basket)
+            let
+                newBasket = model.basket ++ [item]
+                newSel = Just (List.length model.basket)
+            in
+            ( { model
+              | basket = newBasket
+              , columnSelected = newSel
+              , world = populateWorld newSel model.currentSeed model.depth newBasket
               }
             , Cmd.none 
             )
 
         AddLeft item ->
-            ( { model 
-              | basket = item :: model.basket
-              , columnSelected = Just 0
+            let
+                newBasket = item :: model.basket
+                newSel = Just 0
+            in
+            
+            ( { model
+              | basket = newBasket
+              , columnSelected = newSel
+              , world = populateWorld newSel model.currentSeed model.depth newBasket
               }
             , Cmd.none 
             )
 
         SelectNextColumn ->
             let
-                sel = case ( model.columnSelected, List.length model.basket) of
+                newSel = case ( model.columnSelected, List.length model.basket) of
                     ( Just i, len_ ) -> if i+1 == len_ then Just 0 else Just (i+1)
                     ( _, 0 ) -> Nothing
-                    ( Nothing, len_ ) -> Just 0      
+                    ( Nothing, len_ ) -> Just 0
             in
-            ( { model | columnSelected = sel } , Cmd.none )
+            ( { model
+              | columnSelected = newSel
+              , world = populateWorld newSel model.currentSeed model.depth model.basket
+              } 
+            , Cmd.none 
+            )
 
         SelectPrevColumn ->
             let
-                sel = case ( model.columnSelected, List.length model.basket) of
+                newSel = case ( model.columnSelected, List.length model.basket) of
                     ( Just i, len_ ) -> if i == 0 then Just (len_-1) else Just (i-1)
                     ( _, 0 ) -> Nothing
                     ( Nothing, len_ ) -> Just (len_-1)
             in
-            ( { model | columnSelected = sel } , Cmd.none )
+            ( { model
+              | columnSelected = newSel
+              , world = populateWorld newSel model.currentSeed model.depth model.basket
+              }
+            , Cmd.none 
+            )
 
         ToggleWidthOrDir ->
             let
@@ -401,6 +425,7 @@ update message model =
             ( { model
               | futureWidth = Maybe.withDefault model.futureWidth (List.head (List.filterMap identity mbNewWidths))
               , basket = newBasket
+              , world = populateWorld model.columnSelected model.currentSeed model.depth newBasket
               }
             , Cmd.none 
             )
@@ -415,60 +440,65 @@ update message model =
                     in
                         ( newSel, newPlates )
                 maxIdx = (maxSlot nH) +1
-            in
-            ( { model 
-              | futureHeight = nH
-              , basket = 
+                newBasket =
                     List.map 
                         ( \(i, ivar) -> 
                         if model.columnSelected == Just i
-                            then case ivar of 
-                            IvarColumn h w sel plates -> 
-                                let 
+                            then case ivar of
+                            IvarColumn h w sel plates ->
+                                let
                                     ( nS, nP ) = cap sel maxIdx plates
                                 in
                                 IvarColumn nH w nS nP
                             IvarCorner h d sel plates -> 
-                                let 
+                                let
                                     ( nS, nP ) = cap sel maxIdx plates
                                 in
                                 IvarCorner nH d nS nP
                             else ivar
                         ) <| List.indexedMap Tuple.pair model.basket
-                }
+            in
+            ( { model
+              | futureHeight = nH
+              , basket = newBasket
+              , world = populateWorld model.columnSelected model.currentSeed model.depth newBasket
+              }
             , Cmd.none 
             )
 
         Remove ->
             let 
                 oldLen = List.length model.basket
-            in
-            ( { model 
-                | basket = 
-                    List.filterMap
-                    ( \(i, ivar) ->
-                        if model.columnSelected == Just i 
-                        then Nothing
-                        else Just ivar
-                    ) <| List.indexedMap Tuple.pair model.basket
-                , columnSelected = 
+                newSel =
                     case ( model.columnSelected, oldLen ) of 
                     ( Nothing, _ ) -> Just 0
                     ( Just 0,  _ ) -> Just 0
                     ( Just i,  _ ) -> if i > (oldLen-2) then Just (oldLen-2) else Just (i-1)
-                }
-            , Cmd.none 
+                newBasket =
+                    List.filterMap
+                    ( \(i, ivar) ->
+                        if model.columnSelected == Just i
+                            then Nothing
+                            else Just ivar
+                    ) <| List.indexedMap Tuple.pair model.basket
+            in
+            ( { model
+              | basket = newBasket
+              , columnSelected = newSel
+              , world = populateWorld newSel model.currentSeed model.depth newBasket
+              }
+            , Cmd.none
             )
 
         AddPlate ->
-            ( { model 
-              | basket =
+            let
+                newBasket =
                     List.map 
-                        ( \(i, ivar) -> 
-                        if model.columnSelected == Just i
+                        ( \(i, ivar) ->
+                          if model.columnSelected == Just i
                             then 
-                            case ivar of 
-                                IvarColumn h w sel plates -> 
+                              case ivar of 
+                                IvarColumn h w sel plates ->
                                     let
                                         (newSel, newSlot) =
                                           if (List.length plates) - sel > 1
@@ -476,7 +506,7 @@ update message model =
                                             else ( sel  , ((Maybe.withDefault 5 (getAt sel plates)) + (Maybe.withDefault 7 (getAt (sel-1) plates))) // 2)
                                     in
                                     IvarColumn h w newSel (List.sort (newSlot::plates))
-                                IvarCorner h b sel plates -> 
+                                IvarCorner h b sel plates ->
                                     let
                                         (newSel, newSlot) =
                                           if (List.length plates) - sel > 1
@@ -486,13 +516,17 @@ update message model =
                                     IvarCorner h b (sel+1) (List.sort (newSlot::plates))
                             else ivar
                         ) <| List.indexedMap Tuple.pair model.basket
-                }
+            in
+            ( { model
+              | basket = newBasket
+              , world = populateWorld model.columnSelected model.currentSeed model.depth newBasket
+              }
             , Cmd.none 
             )
 
         SelectNextPlate ->
-            ( { model | 
-                    basket =
+            let
+                newBasket =
                     List.map 
                         ( \(i, ivar) ->
                         if model.columnSelected == Just i 
@@ -503,25 +537,33 @@ update message model =
                           else
                             ivar
                         ) <| List.indexedMap Tuple.pair model.basket
-                }
+            in
+            ( { model
+              | basket = newBasket
+              , world = populateWorld model.columnSelected model.currentSeed model.depth newBasket
+              }
             , Cmd.none 
             )
 
         SelectPrevPlate ->
-            ( { model | 
-                    basket =
+            let
+                newBasket =
                     List.map 
                         ( \(i, ivar) ->
                         if model.columnSelected == Just i 
                             then
-                            case ivar of 
+                            case ivar of
                                 IvarColumn h w sel plates -> IvarColumn h w (if sel == 0 then ( (List.length plates)-1 ) else sel-1) plates
                                 IvarCorner h d sel plates -> IvarCorner h d (if sel == 0 then ( (List.length plates)-1 ) else sel-1) plates
                             else
                             ivar
                         ) <| List.indexedMap Tuple.pair model.basket
-                }
-            , Cmd.none 
+            in
+            ( { model
+              | basket = newBasket
+              , world = populateWorld model.columnSelected model.currentSeed model.depth newBasket
+              }
+            , Cmd.none
             )
 
         MovePlate boolUp ->
@@ -537,59 +579,64 @@ update message model =
                         else 
                         slot
                     ) <| List.indexedMap Tuple.pair plates
-            in
-            ( { model |
-                    basket = 
+                newBasket =
                     List.map 
                         ( \(i, ivar) ->
                         if model.columnSelected == Just i 
                             then
-                                case ivar of 
+                                case ivar of
                                     IvarColumn h w sel plates -> IvarColumn h w sel (movePlate sel (maxSlot h) plates)
                                     IvarCorner h d sel plates -> IvarCorner h d sel (movePlate sel (maxSlot h) plates)
                             else
                             ivar
                         ) <| List.indexedMap Tuple.pair model.basket
-                }
-            , Cmd.none 
+            in
+            ( { model
+              | basket = newBasket
+              , world = populateWorld model.columnSelected model.currentSeed model.depth newBasket
+              }
+            , Cmd.none
             )
 
         RemovePlate ->
             let
-                remove sel plates = 
+                remove sel plates =
                     let
-                        newPlates = 
-                          List.filterMap 
+                        newPlates =
+                          List.filterMap
                             ( \(pi, x) -> if sel == pi then Nothing else Just x
                             ) 
                             <| List.indexedMap Tuple.pair plates
                         newSel = if sel >= List.length newPlates then sel-1 else sel
                     in
                     (newSel, newPlates)
-            in 
-            ( { model | 
-                    basket =
-                    List.map 
+                newBasket =
+                   List.map 
                         ( \(i, ivar) -> 
                         if model.columnSelected == Just i
-                            then 
-                            case ivar of 
-                                IvarColumn h w sel plates -> 
-                                    let 
-                                        ( nS, nP) = remove sel plates
-                                    in
-                                    IvarColumn h w nS nP
-                                IvarCorner h b sel plates -> 
-                                    let 
-                                        ( nS, nP) = remove sel plates
-                                    in
-                                    IvarCorner h b nS nP
-                            else 
-                            ivar
+                            then
+                                case ivar of 
+                                    IvarColumn h w sel plates ->
+                                        let
+                                            ( nS, nP) = remove sel plates
+                                        in
+                                        IvarColumn h w nS nP
+                                    IvarCorner h b sel plates ->
+                                        let
+                                            ( nS, nP) = remove sel plates
+                                        in
+                                        IvarCorner h b nS nP
+                            else
+                                ivar
                         ) <| List.indexedMap Tuple.pair model.basket
-                }
-            , Cmd.none 
+            in 
+            ( { model
+              | basket = newBasket
+              , world = populateWorld model.columnSelected model.currentSeed model.depth newBasket
+              }
+            , Cmd.none
             )
+
 
 decodeMouseMove : Decoder Msg
 decodeMouseMove =
@@ -1009,7 +1056,7 @@ requestUSDZ base uuid usda =
         [ "api", "Model" ]
         [ Url.Builder.string "uuid" (Uuid.toString uuid)
         , Url.Builder.string "productKey" "SecretKey" -- change this for your App
-        , Url.Builder.string "procedure" "ivar"
+        , Url.Builder.string "procedure" "usda2z" -- how the BODY content should be treated to create the USDZ arcive (i.e. convert ASCII to Crate and Zip with Texture(s))
         ]
         |> HttpBuilder.post
         |> HttpBuilder.withStringBody "text/plain" usda
@@ -1253,6 +1300,49 @@ buttonStyle bg =
   , centerText
   ]
 
+populateWorld : Maybe Int -> Seed -> IvarDepth -> List Ivar -> List (Drawable World)
+populateWorld columnSelected currentSeed depth basket =
+    let
+        (endState, drawnItems) =
+            mapAccuml 
+                (\state (i,item) ->
+                    let
+                        isSelected = (columnSelected == Just i)
+                        ( currHeight, nextState ) =
+                            case item of
+                                IvarColumn ih width _ _ ->
+                                    let
+                                        w = case width of
+                                            Wide -> 83.0
+                                            Narrow -> 42.0
+                                        nextPoint =
+                                            Point3d.translateBy (Vector3d.centimeters (w+1.0) 0 0) state.pos
+                                    in
+                                    ( maxIvarHeight ih state.maxHeight
+                                    , State nextPoint currentSeed (Angle.degrees 0) ih isSelected
+                                    )
+                                IvarCorner ih it     _ _ -> 
+                                    ( maxIvarHeight ih state.maxHeight
+                                    , State state.pos currentSeed (Angle.degrees 0) ih isSelected
+                                    )
+                    in
+                    ( nextState, drawItem isSelected currHeight depth state.pos state.angle item )
+                )
+                ( State Point3d.origin currentSeed (Angle.degrees 0) Small False )
+                ( List.indexedMap Tuple.pair basket )
+        placeOffset = 
+            Vector3d.from 
+                Point3d.origin
+                endState.pos
+                |> Vector3d.scaleBy -0.5
+        drawnItemsWithLastStand =
+            Drawable.group ( List.concat 
+                ((ivarStand endState.maxHeight depth endState.pos endState.angle (if endState.isSelected then highlightColumnColor else itemColor)):: drawnItems )
+            ) 
+            |> Drawable.translateBy placeOffset
+    in
+    ( floor :: [drawnItemsWithLastStand]
+    )
 
 view : Model -> Html Msg
 view model =
@@ -1273,43 +1363,6 @@ view model =
                 , clipDepth = Length.meters 0.1
                 }
 
-        (endState, drawnItems) =
-            mapAccuml 
-                (\state (i,item) ->
-                    let
-                        isSelected = (model.columnSelected == Just i)
-                        ( currHeight, nextState ) =
-                            case item of
-                                IvarColumn ih width _ _ ->
-                                    let
-                                        w = case width of
-                                            Wide -> 83.0
-                                            Narrow -> 42.0
-                                        nextPoint =
-                                            Point3d.translateBy (Vector3d.centimeters (w+1.0) 0 0) state.pos
-                                    in
-                                    ( maxIvarHeight ih state.maxHeight
-                                    , State nextPoint model.currentSeed (Angle.degrees 0) ih isSelected
-                                    )
-                                IvarCorner ih it     _ _ -> 
-                                    ( maxIvarHeight ih state.maxHeight
-                                    , State state.pos model.currentSeed (Angle.degrees 0) ih isSelected
-                                    )
-                    in
-                    ( nextState, drawItem isSelected currHeight model.depth state.pos state.angle item )
-                )
-                ( State Point3d.origin model.currentSeed (Angle.degrees 0) Small False )
-                ( List.indexedMap Tuple.pair model.basket )
-        placeOffset = 
-            Vector3d.from 
-                Point3d.origin
-                endState.pos
-                |> Vector3d.scaleBy -0.5
-        drawnItemsWithLastStand =
-            Drawable.group ( List.concat 
-                ((ivarStand endState.maxHeight model.depth endState.pos endState.angle (if endState.isSelected then highlightColumnColor else itemColor)):: drawnItems )
-            ) 
-            |> Drawable.translateBy placeOffset
 
         {-
         eye =
@@ -1409,7 +1462,7 @@ view model =
                     , column --uiColumn 200 200 (onTheFloor -220)
                         [ alignRight, alignTop, padding 6, spacing 6 ] 
                         [ Input.button (buttonStyle itemBtnColor)
-                            { onPress = Just (AddLeft ( IvarColumn model.futureHeight model.futureWidth 0 [1, maxSlot model.futureHeight] ))
+                            { onPress = Just (AddLeft ( IvarColumn model.futureHeight model.futureWidth 0 [3, maxSlot model.futureHeight] ))
                             , label = text "Add Left" 
                             }
                         ]
@@ -1484,7 +1537,7 @@ view model =
                     , column --uiColumn 200 200 (onTheFloor 220)
                         [ alignLeft, alignTop, padding 6, spacing 6 ] 
                         [ Input.button (buttonStyle itemBtnColor)
-                            { onPress = Just (AddRight ( IvarColumn model.futureHeight model.futureWidth 0 [1, maxSlot model.futureHeight] ))
+                            { onPress = Just (AddRight ( IvarColumn model.futureHeight model.futureWidth 0 [3, maxSlot model.futureHeight] ))
                             , label = text "Add Right" 
                             }
                         ]
@@ -1504,8 +1557,7 @@ view model =
                     , exposure = Exposure.fromEv100 14
                     , whiteBalance = Chromaticity.daylight
                     }
-                    ( floor :: [drawnItemsWithLastStand]
-                    )
+                    model.world
                 )
             ]
         )
@@ -1522,3 +1574,4 @@ main =
 
 -- C:\Apache24\bin\httpd.exe
 -- cd examples; elm make IvarConfig.elm --optimize --output=C:\Apache24\htdocs\main.js
+-- cd examples; elm make IvarConfig.elm --optimize --output=C:\inetpub\wwwroot\main.js
