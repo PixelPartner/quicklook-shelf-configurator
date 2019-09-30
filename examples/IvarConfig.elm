@@ -1006,8 +1006,11 @@ requestUSDZ : String -> Uuid.Uuid -> String -> Cmd Msg
 requestUSDZ base uuid usda =
     Url.Builder.crossOrigin
         base
-        [ "make", "usdz" ]
-        [ Url.Builder.string "uuid" (Uuid.toString uuid) ]
+        [ "api", "Model" ]
+        [ Url.Builder.string "uuid" (Uuid.toString uuid)
+        , Url.Builder.string "productKey" "SecretKey" -- change this for your App
+        , Url.Builder.string "procedure" "ivar"
+        ]
         |> HttpBuilder.post
         |> HttpBuilder.withStringBody "text/plain" usda
         |> HttpBuilder.withTimeout 10000

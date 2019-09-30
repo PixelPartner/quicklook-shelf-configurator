@@ -4357,17 +4357,17 @@ var _Http_toTask = F3(function(router, toTask, request)
 	return _Scheduler_binding(function(callback)
 	{
 		function done(response) {
-			callback(toTask(request.U.a(response)));
+			callback(toTask(request.T.a(response)));
 		}
 
 		var xhr = new XMLHttpRequest();
 		xhr.addEventListener('error', function() { done(elm$http$Http$NetworkError_); });
 		xhr.addEventListener('timeout', function() { done(elm$http$Http$Timeout_); });
-		xhr.addEventListener('load', function() { done(_Http_toResponse(request.U.b, xhr)); });
+		xhr.addEventListener('load', function() { done(_Http_toResponse(request.T.b, xhr)); });
 		elm$core$Maybe$isJust(request.ag) && _Http_track(router, xhr, request.ag.a);
 
 		try {
-			xhr.open(request.W, request.ia, true);
+			xhr.open(request.V, request.ia, true);
 		} catch (e) {
 			return done(elm$http$Http$BadUrl_(request.ia));
 		}
@@ -4391,7 +4391,7 @@ function _Http_configureRequest(xhr, request)
 		xhr.setRequestHeader(headers.a.a, headers.a.b);
 	}
 	xhr.timeout = request.Z.a || 0;
-	xhr.responseType = request.U.d;
+	xhr.responseType = request.T.d;
 	xhr.withCredentials = request.bm;
 }
 
@@ -5766,7 +5766,7 @@ function _WebGL_doBindAttribute(gl, attribute, mesh, attributes) {
   // The length of the number of vertices that
   // complete one 'thing' based on the drawing mode.
   // ie, 2 for Lines, 3 for Triangles, etc.
-  var elemSize = mesh.a.au;
+  var elemSize = mesh.a.at;
 
   var idxKeys = [];
   for (var i = 0; i < elemSize; i++) {
@@ -5831,9 +5831,9 @@ function _WebGL_doBindAttribute(gl, attribute, mesh, attributes) {
 function _WebGL_doBindSetup(gl, mesh) {
   _WebGL_log('Created index buffer');
   var indexBuffer = gl.createBuffer();
-  var indices = (mesh.a.aw === 0)
-    ? _WebGL_makeSequentialBuffer(mesh.a.au * _WebGL_listLength(mesh.b))
-    : _WebGL_makeIndexedBuffer(mesh.c, mesh.a.aw);
+  var indices = (mesh.a.av === 0)
+    ? _WebGL_makeSequentialBuffer(mesh.a.at * _WebGL_listLength(mesh.b))
+    : _WebGL_makeIndexedBuffer(mesh.c, mesh.a.av);
 
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
@@ -6000,7 +6000,7 @@ var _WebGL_drawGL = F2(function (model, domNode) {
       return A2(elm_explorations$webgl$WebGL$Internal$enableSetting, gl, setting);
     }, entity.a);
 
-    gl.drawElements(entity.d.a.aC, buffer.numIndices, gl.UNSIGNED_SHORT, 0);
+    gl.drawElements(entity.d.a.aA, buffer.numIndices, gl.UNSIGNED_SHORT, 0);
 
     _WebGL_listEach(function (setting) {
       return A2(elm_explorations$webgl$WebGL$Internal$disableSetting, gl, setting);
@@ -6574,7 +6574,7 @@ var elm$core$Basics$identity = function (x) {
 var NoRedInk$elm_random_pcg_extended$Random$Pcg$Extended$initialSeed = F2(
 	function (baseSeed, extendedSeed) {
 		return {
-			aK: NoRedInk$elm_random_pcg_extended$Internal$Pcg$initialSeed(baseSeed),
+			aI: NoRedInk$elm_random_pcg_extended$Internal$Pcg$initialSeed(baseSeed),
 			ai: elm$core$Array$fromList(extendedSeed)
 		};
 	});
@@ -6920,12 +6920,12 @@ var author$project$IvarConfig$init = function (flags) {
 						]))
 				]),
 			j: elm$core$Maybe$Just(1),
-			ar: A2(NoRedInk$elm_random_pcg_extended$Random$Pcg$Extended$initialSeed, flags.bD, flags.dX),
+			aL: A2(NoRedInk$elm_random_pcg_extended$Random$Pcg$Extended$initialSeed, flags.bD, flags.dX),
 			c1: elm$core$Maybe$Nothing,
-			as: 0,
-			at: '',
+			ar: 0,
+			as: '',
 			br: ianmackenzie$elm_units$Angle$degrees(30),
-			aO: 1,
+			aN: 1,
 			a4: 1,
 			eL: elm$core$Maybe$Nothing,
 			bz: false,
@@ -7867,10 +7867,10 @@ var NoRedInk$elm_random_pcg_extended$Random$Pcg$Extended$incrementExtension = fu
 };
 var NoRedInk$elm_random_pcg_extended$Random$Pcg$Extended$next = function (_n0) {
 	var s = _n0;
-	var newBase = NoRedInk$elm_random_pcg_extended$Internal$Pcg$next(s.aK);
+	var newBase = NoRedInk$elm_random_pcg_extended$Internal$Pcg$next(s.aI);
 	var baseState = newBase.a;
 	return {
-		aK: newBase,
+		aI: newBase,
 		ai: (!baseState) ? NoRedInk$elm_random_pcg_extended$Random$Pcg$Extended$incrementExtension(s.ai) : s.ai
 	};
 };
@@ -7897,14 +7897,14 @@ var elm$core$Maybe$withDefault = F2(
 	});
 var NoRedInk$elm_random_pcg_extended$Random$Pcg$Extended$peel = function (_n0) {
 	var s = _n0;
-	var baseOut = NoRedInk$elm_random_pcg_extended$Internal$Pcg$peel(s.aK);
+	var baseOut = NoRedInk$elm_random_pcg_extended$Internal$Pcg$peel(s.aI);
 	var _n1 = A2(
 		NoRedInk$elm_random_general$Random$General$step,
 		A2(
 			NoRedInk$elm_random_pcg_extended$Internal$Pcg$int,
 			0,
 			elm$core$Array$length(s.ai) - 1),
-		s.aK);
+		s.aI);
 	var randIndex = _n1.a;
 	var extension = A2(
 		elm$core$Maybe$withDefault,
@@ -8224,7 +8224,7 @@ var NoRedInk$elm_random_general$Random$General$pair = F2(
 var NoRedInk$elm_random_pcg_extended$Random$Pcg$Extended$pair = NoRedInk$elm_random_general$Random$General$pair;
 var author$project$IvarConfig$State = F5(
 	function (pos, seed, angle, maxHeight, isSelected) {
-		return {ci: angle, eI: isSelected, az: maxHeight, P: pos, bD: seed};
+		return {ci: angle, eI: isSelected, aR: maxHeight, W: pos, bD: seed};
 	});
 var elm$core$String$fromFloat = _String_fromNumber;
 var author$project$IvarConfig$exportPoints = function (points) {
@@ -8250,27 +8250,27 @@ var author$project$IvarConfig$exportSt = function (points) {
 		points);
 	return '[' + (A2(elm$core$String$join, ', ', pointList) + ']');
 };
-var ianmackenzie$elm_geometry$Vector3d$xComponent = function (_n0) {
-	var v = _n0;
-	return v.ec;
+var ianmackenzie$elm_geometry$Point3d$xCoordinate = function (_n0) {
+	var p = _n0;
+	return p.ec;
 };
-var ianmackenzie$elm_geometry$Vector3d$yComponent = function (_n0) {
-	var v = _n0;
-	return v.ed;
+var ianmackenzie$elm_geometry$Point3d$yCoordinate = function (_n0) {
+	var p = _n0;
+	return p.ed;
 };
-var ianmackenzie$elm_geometry$Vector3d$zComponent = function (_n0) {
-	var v = _n0;
-	return v.ee;
+var ianmackenzie$elm_geometry$Point3d$zCoordinate = function (_n0) {
+	var p = _n0;
+	return p.ee;
 };
-var ianmackenzie$elm_geometry$Vector3d$toRecord = F2(
-	function (fromQuantity, vector) {
+var ianmackenzie$elm_geometry$Point3d$toRecord = F2(
+	function (fromQuantity, point) {
 		return {
 			ec: fromQuantity(
-				ianmackenzie$elm_geometry$Vector3d$xComponent(vector)),
+				ianmackenzie$elm_geometry$Point3d$xCoordinate(point)),
 			ed: fromQuantity(
-				ianmackenzie$elm_geometry$Vector3d$yComponent(vector)),
+				ianmackenzie$elm_geometry$Point3d$yCoordinate(point)),
 			ee: fromQuantity(
-				ianmackenzie$elm_geometry$Vector3d$zComponent(vector))
+				ianmackenzie$elm_geometry$Point3d$zCoordinate(point))
 		};
 	});
 var ianmackenzie$elm_units$Length$inMeters = function (_n0) {
@@ -8285,7 +8285,7 @@ var author$project$IvarConfig$exportPlate = F5(
 		var doMirror = _n0.a;
 		var sOffset = _n0.b;
 		var tOffset = _n0.c;
-		var v = A2(ianmackenzie$elm_geometry$Vector3d$toRecord, ianmackenzie$elm_units$Length$inCentimeters, pos);
+		var v = A2(ianmackenzie$elm_geometry$Point3d$toRecord, ianmackenzie$elm_units$Length$inCentimeters, pos);
 		var vStr = elm$core$String$fromFloat(v.ec) + (', ' + (elm$core$String$fromFloat(v.ee) + (', ' + elm$core$String$fromFloat(v.ed))));
 		var _n1 = function () {
 			if (iw === 1) {
@@ -8355,29 +8355,31 @@ var author$project$IvarConfig$exportPlate = F5(
 				]));
 		return '\r\ndef Xform ' + ('\"' + (name + ('\"' + ('\r\n{\r\n    matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (' + (vStr + (', 1) )\r\n    uniform token[] xformOpOrder = ["xformOp:transform"]\r\n\r\n    def Xform "Geom"\r\n    {\r\n        matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1) )\r\n        uniform token[] xformOpOrder = ["xformOp:transform"]\r\n\r\n        def Mesh "WoodTextured"\r\n        {\r\n            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1) )\r\n            uniform token[] xformOpOrder = ["xformOp:transform"]\r\n            float3[] extent = ' + (extendStr + ('\r\n            int[] faceVertexCounts = [4, 4, 4, 4, 4, 4]\r\n            int[] faceVertexIndices = [0, 1, 2, 3, 4, 7, 6, 5, 0, 4, 5, 1, 1, 5, 6, 2, 2, 6, 7, 3, 4, 0, 3, 7]\r\n            rel material:binding = </ivar/Materials/Material>\r\n            point3f[] points = ' + (author$project$IvarConfig$exportPoints(vert) + ('\r\n            normal3f[] primvars:normals = [(-0, 1, -0), (-0, -1, 0), (1, -0, -0), (-0, 0, -1), (-1, 0, 0), (0, -0, 1)] (\r\n                interpolation = "faceVarying"\r\n            )\r\n            int[] primvars:normals:indices = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5]\r\n            texCoord2f[] primvars:st = ' + (author$project$IvarConfig$exportSt(st) + ' (\r\n                interpolation = "faceVarying"\r\n            )\r\n            int[] primvars:st:indices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]\r\n            uniform token subdivisionScheme = "none"\r\n        }\r\n    }\r\n}\r\n')))))))))));
 	});
+var author$project$IvarConfig$heightInCm = function (ih) {
+	switch (ih) {
+		case 2:
+			return 124.0;
+		case 1:
+			return 179.0;
+		default:
+			return 226.0;
+	}
+};
 var author$project$IvarConfig$exportStand = F5(
 	function (name, _n0, ih, id, pos) {
 		var doMirror = _n0.a;
 		var sOffset = _n0.b;
 		var tOffset = _n0.c;
-		var v = A2(ianmackenzie$elm_geometry$Vector3d$toRecord, ianmackenzie$elm_units$Length$inCentimeters, pos);
+		var v = A2(ianmackenzie$elm_geometry$Point3d$toRecord, ianmackenzie$elm_units$Length$inCentimeters, pos);
 		var vStr = elm$core$String$fromFloat(v.ec) + (', ' + (elm$core$String$fromFloat(v.ee) + (', ' + elm$core$String$fromFloat(v.ed))));
 		var tMin = 0.11371803;
 		var tMax = 0.894095;
 		var t3 = 0.35790002;
 		var t2 = 0.33020902;
 		var t1 = 0.30251896;
-		var maxY = function () {
-			switch (ih) {
-				case 2:
-					return 124.0;
-				case 1:
-					return 179.0;
-				default:
-					return 226.0;
-			}
-		}();
-		var t4 = (((tMax - tMin) / 226.0) * maxY) + tMin;
+		var maxY = author$project$IvarConfig$heightInCm(ih);
+		var maxHeight = author$project$IvarConfig$heightInCm(0);
+		var t4 = (((tMax - tMin) / maxHeight) * maxY) + tMin;
 		var extendStr = '[(-2.2, 0, -1.5), (2.2, ' + (elm$core$String$fromFloat(maxY) + ', 31.5)]');
 		var _n1 = function () {
 			if (!id) {
@@ -8533,7 +8535,15 @@ var author$project$IvarConfig$exportStand = F5(
 			]);
 		return '\r\ndef Xform ' + ('\"' + (name + ('\"' + ('\r\n{\r\n    matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (' + (vStr + (', 1) )\r\n    uniform token[] xformOpOrder = ["xformOp:transform"]\r\n\r\n    def Xform "Geom"\r\n    {\r\n        matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1) )\r\n        uniform token[] xformOpOrder = ["xformOp:transform"]\r\n\r\n        def Mesh "WoodTextured"\r\n        {\r\n            float3[] extent = ' + (extendStr + ('\r\n            int[] faceVertexCounts = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]\r\n            int[] faceVertexIndices = [0, 1, 2, 3, 4, 7, 6, 5, 0, 4, 5, 1, 1, 5, 6, 2, 2, 6, 7, 3, 4, 0, 3, 7, 8, 9, 10, 11, 12, 15, 14, 13, 8, 12, 13, 9, 9, 13, 14, 10, 10, 14, 15, 11, 12, 8, 11, 15, 16, 17, 19, 18, 18, 19, 23, 22, 22, 23, 21, 20, 20, 21, 17, 16, 18, 22, 20, 16, 23, 19, 17, 21, 24, 25, 27, 26, 26, 27, 31, 30, 30, 31, 29, 28, 28, 29, 25, 24, 26, 30, 28, 24, 31, 27, 25, 29]\r\n            rel material:binding = </ivar/Materials/Material>\r\n            point3f[] points = ' + (author$project$IvarConfig$exportPoints(vert) + ('\r\n            normal3f[] primvars:normals = [(-0, -1, -0), (-0, 1, -0), (-1, 0, -0), (0, 0, -1), (1, -0, 0), (-0, -0, 1)] (\r\n                interpolation = "faceVarying"\r\n            )\r\n            int[] primvars:normals:indices = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 4, 4, 4, 4, 5, 5, 5, 5, 2, 2, 2, 2, 3, 3, 3, 3, 0, 0, 0, 0, 1, 1, 1, 1, 4, 4, 4, 4, 5, 5, 5, 5, 2, 2, 2, 2, 3, 3, 3, 3, 0, 0, 0, 0, 1, 1, 1, 1]\r\n            texCoord2f[] primvars:st = ' + (author$project$IvarConfig$exportSt(st) + ' (\r\n                interpolation = "faceVarying"\r\n            )\r\n            int[] primvars:st:indices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95]\r\n            uniform token subdivisionScheme = "none"\r\n        }\r\n    }\r\n}\r\n')))))))))));
 	});
+var author$project$IvarConfig$slotStepInCm = 3.2;
 var elm$core$Basics$not = _Basics_not;
+var ianmackenzie$elm_geometry$Geometry$Types$Point3d = elm$core$Basics$identity;
+var ianmackenzie$elm_geometry$Point3d$translateBy = F2(
+	function (_n0, _n1) {
+		var v = _n0;
+		var p = _n1;
+		return {ec: p.ec + v.ec, ed: p.ed + v.ed, ee: p.ee + v.ee};
+	});
 var ianmackenzie$elm_geometry$Geometry$Types$Vector3d = elm$core$Basics$identity;
 var ianmackenzie$elm_geometry$Vector3d$xyz = F3(
 	function (_n0, _n1, _n2) {
@@ -8555,12 +8565,6 @@ var ianmackenzie$elm_geometry$Vector3d$centimeters = F3(
 			ianmackenzie$elm_units$Length$centimeters(x),
 			ianmackenzie$elm_units$Length$centimeters(y),
 			ianmackenzie$elm_units$Length$centimeters(z));
-	});
-var ianmackenzie$elm_geometry$Vector3d$plus = F2(
-	function (_n0, _n1) {
-		var v2 = _n0;
-		var v1 = _n1;
-		return {ec: v1.ec + v2.ec, ed: v1.ed + v2.ed, ee: v1.ee + v2.ee};
 	});
 var author$project$IvarConfig$exportItem = F7(
 	function (colIdx, h, d, columnPosition, _n0, angle, item) {
@@ -8602,9 +8606,9 @@ var author$project$IvarConfig$exportItem = F7(
 							iw,
 							d,
 							A2(
-								ianmackenzie$elm_geometry$Vector3d$plus,
-								columnPosition,
-								A3(ianmackenzie$elm_geometry$Vector3d$centimeters, 0, 0, (slot + 1) * 3.2)));
+								ianmackenzie$elm_geometry$Point3d$translateBy,
+								A3(ianmackenzie$elm_geometry$Vector3d$centimeters, 0, 0, (slot + 1) * author$project$IvarConfig$slotStepInCm),
+								columnPosition));
 					},
 					A2(elm$core$List$indexedMap, elm$core$Tuple$pair, slots)));
 		} else {
@@ -8683,12 +8687,56 @@ var elm$core$List$append = F2(
 var elm$core$List$concat = function (lists) {
 	return A3(elm$core$List$foldr, elm$core$List$append, _List_Nil, lists);
 };
+var ianmackenzie$elm_geometry$Point3d$xyz = F3(
+	function (_n0, _n1, _n2) {
+		var x = _n0;
+		var y = _n1;
+		var z = _n2;
+		return {ec: x, ed: y, ee: z};
+	});
+var ianmackenzie$elm_geometry$Point3d$centimeters = F3(
+	function (x, y, z) {
+		return A3(
+			ianmackenzie$elm_geometry$Point3d$xyz,
+			ianmackenzie$elm_units$Length$centimeters(x),
+			ianmackenzie$elm_units$Length$centimeters(y),
+			ianmackenzie$elm_units$Length$centimeters(z));
+	});
+var ianmackenzie$elm_geometry$Point3d$origin = {ec: 0, ed: 0, ee: 0};
+var ianmackenzie$elm_geometry$Vector3d$from = F2(
+	function (_n0, _n1) {
+		var p1 = _n0;
+		var p2 = _n1;
+		return {ec: p2.ec - p1.ec, ed: p2.ed - p1.ed, ee: p2.ee - p1.ee};
+	});
 var ianmackenzie$elm_geometry$Vector3d$scaleBy = F2(
 	function (k, _n0) {
 		var v = _n0;
 		return {ec: k * v.ec, ed: k * v.ed, ee: k * v.ee};
 	});
-var ianmackenzie$elm_geometry$Vector3d$zero = {ec: 0, ed: 0, ee: 0};
+var ianmackenzie$elm_geometry$Vector3d$xComponent = function (_n0) {
+	var v = _n0;
+	return v.ec;
+};
+var ianmackenzie$elm_geometry$Vector3d$yComponent = function (_n0) {
+	var v = _n0;
+	return v.ed;
+};
+var ianmackenzie$elm_geometry$Vector3d$zComponent = function (_n0) {
+	var v = _n0;
+	return v.ee;
+};
+var ianmackenzie$elm_geometry$Vector3d$toRecord = F2(
+	function (fromQuantity, vector) {
+		return {
+			ec: fromQuantity(
+				ianmackenzie$elm_geometry$Vector3d$xComponent(vector)),
+			ed: fromQuantity(
+				ianmackenzie$elm_geometry$Vector3d$yComponent(vector)),
+			ee: fromQuantity(
+				ianmackenzie$elm_geometry$Vector3d$zComponent(vector))
+		};
+	});
 var author$project$IvarConfig$exportScene = function (model) {
 	var prolog = '#usda 1.0\r\n(\r\n    customLayerData = {\r\n        string creator = "Web based configurator 0.90beta"\r\n    }\r\n    defaultPrim = "ivar"\r\n    metersPerUnit = 0.01\r\n    upAxis = "Y"\r\n)\r\n\r\ndef Xform "ivar" (\r\n    assetInfo = {\r\n        string name = "ivar"\r\n    }\r\n    kind = "component"\r\n)\r\n{\r\n    def Scope "Geom"\r\n    {\r\n        def Xform "myIVAR_tex"\r\n        {\r\n            matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1) )\r\n            uniform token[] xformOpOrder = ["xformOp:transform"]\r\n\r\n            def Xform "Geom"\r\n            {\r\n                matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1) )\r\n                uniform token[] xformOpOrder = ["xformOp:transform"]\r\n\r\n                def Xform "IVAR_set"\r\n                {\r\n                    matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1) )\r\n                    uniform token[] xformOpOrder = ["xformOp:transform"]\r\n\r\n                    def Xform "Wood_grp"\r\n                    {\r\n';
 	var _n0 = A3(
@@ -8714,13 +8762,13 @@ var author$project$IvarConfig$exportScene = function (model) {
 							var ih = item.a;
 							var _n6 = item.b;
 							return _Utils_Tuple2(
-								A2(author$project$IvarConfig$maxIvarHeight, ih, state.az),
+								A2(author$project$IvarConfig$maxIvarHeight, ih, state.aR),
 								A5(
 									author$project$IvarConfig$State,
 									A2(
-										ianmackenzie$elm_geometry$Vector3d$plus,
-										state.P,
-										A3(ianmackenzie$elm_geometry$Vector3d$centimeters, 83.0 + 1.0, 0, 0)),
+										ianmackenzie$elm_geometry$Point3d$translateBy,
+										A3(ianmackenzie$elm_geometry$Vector3d$centimeters, 83.0 + 1.0, 0, 0),
+										state.W),
 									nextSeed,
 									ianmackenzie$elm_units$Angle$degrees(0),
 									ih,
@@ -8729,13 +8777,13 @@ var author$project$IvarConfig$exportScene = function (model) {
 							var ih = item.a;
 							var _n7 = item.b;
 							return _Utils_Tuple2(
-								A2(author$project$IvarConfig$maxIvarHeight, ih, state.az),
+								A2(author$project$IvarConfig$maxIvarHeight, ih, state.aR),
 								A5(
 									author$project$IvarConfig$State,
 									A2(
-										ianmackenzie$elm_geometry$Vector3d$plus,
-										state.P,
-										A3(ianmackenzie$elm_geometry$Vector3d$centimeters, 42.0 + 1.0, 0, 0)),
+										ianmackenzie$elm_geometry$Point3d$translateBy,
+										A3(ianmackenzie$elm_geometry$Vector3d$centimeters, 42.0 + 1.0, 0, 0),
+										state.W),
 									nextSeed,
 									ianmackenzie$elm_units$Angle$degrees(0),
 									ih,
@@ -8745,10 +8793,10 @@ var author$project$IvarConfig$exportScene = function (model) {
 						var ih = item.a;
 						var it = item.b;
 						return _Utils_Tuple2(
-							A2(author$project$IvarConfig$maxIvarHeight, ih, state.az),
+							A2(author$project$IvarConfig$maxIvarHeight, ih, state.aR),
 							A5(
 								author$project$IvarConfig$State,
-								state.P,
+								state.W,
 								nextSeed,
 								ianmackenzie$elm_units$Angle$degrees(0),
 								ih,
@@ -8765,43 +8813,41 @@ var author$project$IvarConfig$exportScene = function (model) {
 						author$project$IvarConfig$exportItem,
 						idx,
 						currHeight,
-						model.as,
-						state.P,
+						model.ar,
+						state.W,
 						_Utils_Tuple3(doMirror, sOffset, tOffset),
 						state.ci,
 						item));
 			}),
 		A5(
 			author$project$IvarConfig$State,
-			ianmackenzie$elm_geometry$Vector3d$zero,
-			model.ar,
+			ianmackenzie$elm_geometry$Point3d$origin,
+			model.aL,
 			ianmackenzie$elm_units$Angle$degrees(0),
 			2,
 			false),
 		A2(elm$core$List$indexedMap, elm$core$Tuple$pair, model.e));
 	var endState = _n0.a;
 	var exportedItems = _n0.b;
-	var place = A2(
-		ianmackenzie$elm_geometry$Vector3d$toRecord,
-		ianmackenzie$elm_units$Length$inCentimeters,
+	var placeOffset = A2(
+		ianmackenzie$elm_geometry$Vector3d$scaleBy,
+		-0.5,
 		A2(
-			ianmackenzie$elm_geometry$Vector3d$scaleBy,
-			-0.5,
-			A2(
-				ianmackenzie$elm_geometry$Vector3d$plus,
-				A3(
-					ianmackenzie$elm_geometry$Vector3d$centimeters,
-					0,
-					function () {
-						var _n9 = model.as;
-						if (!_n9) {
-							return 30.0;
-						} else {
-							return 50.0;
-						}
-					}(),
-					0),
-				endState.P)));
+			ianmackenzie$elm_geometry$Vector3d$from,
+			A3(
+				ianmackenzie$elm_geometry$Point3d$centimeters,
+				0,
+				-function () {
+					var _n9 = model.ar;
+					if (!_n9) {
+						return 30.0;
+					} else {
+						return 50.0;
+					}
+				}(),
+				0),
+			endState.W));
+	var place = A2(ianmackenzie$elm_geometry$Vector3d$toRecord, ianmackenzie$elm_units$Length$inCentimeters, placeOffset);
 	var epilog = '\r\n                        matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (' + (elm$core$String$fromFloat(place.ec) + (', ' + (elm$core$String$fromFloat(place.ee) + (', ' + (elm$core$String$fromFloat(place.ed) + ', 1) )\r\n                        uniform token[] xformOpOrder = ["xformOp:transform"]\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n\r\n    def Scope "Materials"\r\n    {\r\n        def Material "Material"\r\n        {\r\n            token outputs:surface.connect = </ivar/Materials/Material/surfaceShader.outputs:surface>\r\n\r\n            def Shader "surfaceShader"\r\n            {\r\n                uniform token info:id = "UsdPreviewSurface"\r\n                color3f inputs:diffuseColor.connect = </ivar/Materials/Material/diffuseColor_texture.outputs:rgb>\r\n                color3f inputs:emissiveColor = (0, 0, 0)\r\n                float inputs:metallic = 0\r\n                normal3f inputs:normal = (1, 1, 1)\r\n                float inputs:occlusion = 0\r\n                float inputs:opacity = 1\r\n                float inputs:roughness = 0.9\r\n                token outputs:surface\r\n            }\r\n\r\n            def Shader "texCoordReader"\r\n            {\r\n                uniform token info:id = "UsdPrimvarReader_float2"\r\n                token inputs:varname = "st"\r\n                float2 outputs:result\r\n            }\r\n\r\n            def Shader "diffuseColor_texture"\r\n            {\r\n                uniform token info:id = "UsdUVTexture"\r\n                asset inputs:file = @0/kiefer_4096.jpg@\r\n                texCoord2f inputs:st.connect = </ivar/Materials/Material/texCoordReader.outputs:result>\r\n                token inputs:wrapS = "repeat"\r\n                token inputs:wrapT = "repeat"\r\n                float3 outputs:rgb\r\n            }\r\n        }\r\n    }\r\n}\r\n')))));
 	return _Utils_ap(
 		prolog,
@@ -8815,9 +8861,9 @@ var author$project$IvarConfig$exportScene = function (model) {
 					author$project$IvarConfig$exportStand,
 					'Stand_99',
 					_Utils_Tuple3(false, 0.0, 0.0),
-					endState.az,
-					model.as,
-					endState.P),
+					endState.aR,
+					model.ar,
+					endState.W),
 				epilog)));
 };
 var elm$core$List$head = function (list) {
@@ -9398,12 +9444,12 @@ var lukewestby$elm_http_builder$HttpBuilder$requestWithMethodAndUrl = F2(
 	function (method, url) {
 		return {
 			f9: elm$http$Http$emptyBody,
-			U: elm$http$Http$expectString(
+			T: elm$http$Http$expectString(
 				function (_n0) {
 					return 0;
 				}),
 			L: _List_Nil,
-			W: method,
+			V: method,
 			Z: elm$core$Maybe$Nothing,
 			ia: url,
 			bK: false
@@ -9529,9 +9575,9 @@ var elm$http$Http$cmdMap = F2(
 				{
 					bm: r.bm,
 					f9: r.f9,
-					U: A2(_Http_mapExpect, func, r.U),
+					T: A2(_Http_mapExpect, func, r.T),
 					L: r.L,
-					W: r.W,
+					V: r.V,
 					Z: r.Z,
 					ag: r.ag,
 					ia: r.ia
@@ -9557,21 +9603,21 @@ var elm$http$Http$subscription = _Platform_leaf('Http');
 var elm$http$Http$request = function (r) {
 	return elm$http$Http$command(
 		elm$http$Http$Request(
-			{bm: false, f9: r.f9, U: r.U, L: r.L, W: r.W, Z: r.Z, ag: r.ag, ia: r.ia}));
+			{bm: false, f9: r.f9, T: r.T, L: r.L, V: r.V, Z: r.Z, ag: r.ag, ia: r.ia}));
 };
 var elm$http$Http$riskyRequest = function (r) {
 	return elm$http$Http$command(
 		elm$http$Http$Request(
-			{bm: true, f9: r.f9, U: r.U, L: r.L, W: r.W, Z: r.Z, ag: r.ag, ia: r.ia}));
+			{bm: true, f9: r.f9, T: r.T, L: r.L, V: r.V, Z: r.Z, ag: r.ag, ia: r.ia}));
 };
 var lukewestby$elm_http_builder$HttpBuilder$request = function (builder) {
 	var req = builder.bK ? elm$http$Http$riskyRequest : elm$http$Http$request;
 	return req(
-		{f9: builder.f9, U: builder.U, L: builder.L, W: builder.W, Z: builder.Z, ag: elm$core$Maybe$Nothing, ia: builder.ia});
+		{f9: builder.f9, T: builder.T, L: builder.L, V: builder.V, Z: builder.Z, ag: elm$core$Maybe$Nothing, ia: builder.ia});
 };
 var lukewestby$elm_http_builder$HttpBuilder$withExpect = F2(
 	function (expect, builder) {
-		return {f9: builder.f9, U: expect, L: builder.L, W: builder.W, Z: builder.Z, ia: builder.ia, bK: builder.bK};
+		return {f9: builder.f9, T: expect, L: builder.L, V: builder.V, Z: builder.Z, ia: builder.ia, bK: builder.bK};
 	});
 var elm$http$Http$stringBody = _Http_pair;
 var lukewestby$elm_http_builder$HttpBuilder$withBody = F2(
@@ -9611,13 +9657,15 @@ var author$project$IvarConfig$requestUSDZ = F3(
 								elm$url$Url$Builder$crossOrigin,
 								base,
 								_List_fromArray(
-									['make', 'usdz']),
+									['api', 'Model']),
 								_List_fromArray(
 									[
 										A2(
 										elm$url$Url$Builder$string,
 										'uuid',
-										NoRedInk$elm_uuid$Prng$Uuid$toString(uuid))
+										NoRedInk$elm_uuid$Prng$Uuid$toString(uuid)),
+										A2(elm$url$Url$Builder$string, 'productKey', 'SecretKey'),
+										A2(elm$url$Url$Builder$string, 'procedure', 'ivar')
 									])))))));
 	});
 var elm$core$List$filter = F2(
@@ -9715,16 +9763,16 @@ var author$project$IvarConfig$update = F2(
 					return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 				}
 			case 3:
-				var _n1 = A2(NoRedInk$elm_random_pcg_extended$Random$Pcg$Extended$step, NoRedInk$elm_uuid$Prng$Uuid$generator, model.ar);
+				var _n1 = A2(NoRedInk$elm_random_pcg_extended$Random$Pcg$Extended$step, NoRedInk$elm_uuid$Prng$Uuid$generator, model.aL);
 				var newUuid = _n1.a;
 				var newSeed = _n1.b;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							ar: newSeed,
+							aL: newSeed,
 							c1: elm$core$Maybe$Just(newUuid),
-							at: model.cj + '/models/Sample.usdz'
+							as: model.cj + '/models/Sample.usdz'
 						}),
 					A3(
 						author$project$IvarConfig$requestUSDZ,
@@ -9737,7 +9785,7 @@ var author$project$IvarConfig$update = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{at: url}),
+							{as: url}),
 						elm$core$Platform$Cmd$none);
 				} else {
 					var err = message.a.a;
@@ -9747,14 +9795,14 @@ var author$project$IvarConfig$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{at: ''}),
+						{as: ''}),
 					elm$core$Platform$Cmd$none);
 			case 6:
 				var fH = message.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{aO: fH}),
+						{aN: fH}),
 					elm$core$Platform$Cmd$none);
 			case 7:
 				var fW = message.a;
@@ -9768,7 +9816,7 @@ var author$project$IvarConfig$update = F2(
 					_Utils_update(
 						model,
 						{
-							as: (model.as === 1) ? 0 : 1
+							ar: (model.ar === 1) ? 0 : 1
 						}),
 					elm$core$Platform$Cmd$none);
 			case 10:
@@ -9946,7 +9994,7 @@ var author$project$IvarConfig$update = F2(
 									}
 								},
 								A2(elm$core$List$indexedMap, elm$core$Tuple$pair, model.e)),
-							aO: nH
+							aN: nH
 						}),
 					elm$core$Platform$Cmd$none);
 			case 15:
@@ -10489,6 +10537,22 @@ var avh4$elm_color$Color$rgb = F3(
 var author$project$IvarConfig$highlightColumnColor = A3(avh4$elm_color$Color$rgb, 0.2, 0.8, 0.2);
 var author$project$IvarConfig$highlightPlateColor = A3(avh4$elm_color$Color$rgb, 0.2, 0.2, 0.8);
 var author$project$IvarConfig$itemColor = A3(avh4$elm_color$Color$rgb, 0.9, 0.78, 0.64);
+var author$project$IvarConfig$depthInCm = function (id) {
+	if (!id) {
+		return 30.0;
+	} else {
+		return 50.0;
+	}
+};
+var author$project$IvarConfig$gapInCm = 1.0;
+var author$project$IvarConfig$plateHeight = ianmackenzie$elm_units$Length$centimeters(2.0);
+var author$project$IvarConfig$widthInCm = function (iw) {
+	if (!iw) {
+		return 42.0;
+	} else {
+		return 83.0;
+	}
+};
 var author$project$Scene3d$Types$Drawable = elm$core$Basics$identity;
 var author$project$Scene3d$Types$EmptyNode = {$: 0};
 var author$project$Scene3d$Drawable$empty = author$project$Scene3d$Types$EmptyNode;
@@ -10693,6 +10757,84 @@ var author$project$Scene3d$Drawable$transformBy = F2(
 				return A2(author$project$Scene3d$Types$Transformed, transformation, node);
 		}
 	});
+var ianmackenzie$elm_geometry$Direction3d$xComponent = function (_n0) {
+	var d = _n0;
+	return d.ec;
+};
+var ianmackenzie$elm_geometry$Direction3d$yComponent = function (_n0) {
+	var d = _n0;
+	return d.ed;
+};
+var ianmackenzie$elm_geometry$Direction3d$zComponent = function (_n0) {
+	var d = _n0;
+	return d.ee;
+};
+var ianmackenzie$elm_geometry$Frame3d$isRightHanded = function (_n0) {
+	var frame = _n0;
+	var i = ianmackenzie$elm_geometry$Direction3d$zComponent(frame.iq);
+	var h = ianmackenzie$elm_geometry$Direction3d$yComponent(frame.iq);
+	var g = ianmackenzie$elm_geometry$Direction3d$xComponent(frame.iq);
+	var f = ianmackenzie$elm_geometry$Direction3d$zComponent(frame.io);
+	var e = ianmackenzie$elm_geometry$Direction3d$yComponent(frame.io);
+	var d = ianmackenzie$elm_geometry$Direction3d$xComponent(frame.io);
+	var c = ianmackenzie$elm_geometry$Direction3d$zComponent(frame.ik);
+	var b = ianmackenzie$elm_geometry$Direction3d$yComponent(frame.ik);
+	var a = ianmackenzie$elm_geometry$Direction3d$xComponent(frame.ik);
+	return (((((((a * e) * i) + ((b * f) * g)) + ((c * d) * h)) - ((c * e) * g)) - ((b * d) * i)) - ((a * f) * h)) > 0;
+};
+var ianmackenzie$elm_geometry$Frame3d$originPoint = function (_n0) {
+	var properties = _n0;
+	return properties.hn;
+};
+var ianmackenzie$elm_geometry$Frame3d$xDirection = function (_n0) {
+	var properties = _n0;
+	return properties.ik;
+};
+var ianmackenzie$elm_geometry$Frame3d$yDirection = function (_n0) {
+	var properties = _n0;
+	return properties.io;
+};
+var ianmackenzie$elm_geometry$Frame3d$zDirection = function (_n0) {
+	var properties = _n0;
+	return properties.iq;
+};
+var ianmackenzie$elm_geometry$Point3d$unwrap = function (_n0) {
+	var coordinates = _n0;
+	return coordinates;
+};
+var author$project$Scene3d$Transformation$placeIn = function (frame) {
+	var p0 = ianmackenzie$elm_geometry$Point3d$unwrap(
+		ianmackenzie$elm_geometry$Frame3d$originPoint(frame));
+	var k = ianmackenzie$elm_geometry$Direction3d$unwrap(
+		ianmackenzie$elm_geometry$Frame3d$zDirection(frame));
+	var j = ianmackenzie$elm_geometry$Direction3d$unwrap(
+		ianmackenzie$elm_geometry$Frame3d$yDirection(frame));
+	var i = ianmackenzie$elm_geometry$Direction3d$unwrap(
+		ianmackenzie$elm_geometry$Frame3d$xDirection(frame));
+	return {
+		g6: ianmackenzie$elm_geometry$Frame3d$isRightHanded(frame),
+		r: i.ec,
+		s: i.ed,
+		t: i.ee,
+		u: j.ec,
+		v: j.ed,
+		w: j.ee,
+		x: k.ec,
+		y: k.ed,
+		z: k.ee,
+		I: p0.ec,
+		J: p0.ed,
+		K: p0.ee,
+		hx: 1
+	};
+};
+var author$project$Scene3d$Drawable$placeIn = F2(
+	function (frame, givenDrawable) {
+		return A2(
+			author$project$Scene3d$Drawable$transformBy,
+			author$project$Scene3d$Transformation$placeIn(frame),
+			givenDrawable);
+	});
 var ianmackenzie$elm_geometry$Vector3d$unwrap = function (_n0) {
 	var components = _n0;
 	return components;
@@ -10809,6 +10951,7 @@ var author$project$Scene3d$Mesh$edgeKey = F3(
 	function (numVertices, i, j) {
 		return (_Utils_cmp(i, j) < 0) ? ((i * numVertices) + j) : ((j * numVertices) + i);
 	});
+var ianmackenzie$elm_geometry$Vector3d$zero = {ec: 0, ed: 0, ee: 0};
 var author$project$Scene3d$Mesh$updateShadowEdge = F6(
 	function (i, j, pi, pj, normalVector, currentEntry) {
 		if (currentEntry.$ === 1) {
@@ -10839,12 +10982,6 @@ var ianmackenzie$elm_geometry$Vector3d$cross = F2(
 		var v2 = _n0;
 		var v1 = _n1;
 		return {ec: (v1.ed * v2.ee) - (v1.ee * v2.ed), ed: (v1.ee * v2.ec) - (v1.ec * v2.ee), ee: (v1.ec * v2.ed) - (v1.ed * v2.ec)};
-	});
-var ianmackenzie$elm_geometry$Vector3d$from = F2(
-	function (_n0, _n1) {
-		var p1 = _n0;
-		var p2 = _n1;
-		return {ec: p2.ec - p1.ec, ed: p2.ed - p1.ed, ee: p2.ee - p1.ee};
 	});
 var elm$core$Basics$sqrt = _Basics_sqrt;
 var ianmackenzie$elm_geometry$Vector3d$normalize = function (_n0) {
@@ -10917,10 +11054,6 @@ var author$project$Scene3d$Mesh$buildShadowEdges = F4(
 			}
 		}
 	});
-var ianmackenzie$elm_geometry$Point3d$unwrap = function (_n0) {
-	var coordinates = _n0;
-	return coordinates;
-};
 var ianmackenzie$elm_geometry_linear_algebra_interop$Geometry$Interop$LinearAlgebra$Point3d$toVec3 = function (point) {
 	var _n0 = ianmackenzie$elm_geometry$Point3d$unwrap(point);
 	var x = _n0.ec;
@@ -10981,10 +11114,10 @@ var elm_explorations$webgl$WebGL$Mesh3 = F2(
 		return {$: 2, a: a, b: b};
 	});
 var elm_explorations$webgl$WebGL$triangles = elm_explorations$webgl$WebGL$Mesh3(
-	{au: 3, aw: 0, aC: 4});
+	{at: 3, av: 0, aA: 4});
 var ianmackenzie$elm_triangular_mesh$TriangularMesh$faceIndices = function (_n0) {
 	var mesh = _n0;
-	return mesh.V;
+	return mesh.U;
 };
 var elm$core$Maybe$map3 = F4(
 	function (func, ma, mb, mc) {
@@ -11008,7 +11141,7 @@ var elm$core$Maybe$map3 = F4(
 	});
 var ianmackenzie$elm_triangular_mesh$TriangularMesh$vertices = function (_n0) {
 	var mesh = _n0;
-	return mesh.aI;
+	return mesh.aG;
 };
 var ianmackenzie$elm_triangular_mesh$TriangularMesh$vertex = F2(
 	function (index, mesh) {
@@ -11085,13 +11218,13 @@ var ianmackenzie$elm_triangular_mesh$TriangularMesh$mapVertices = F2(
 	function (_function, _n0) {
 		var mesh = _n0;
 		return {
-			V: mesh.V,
-			aI: A2(elm$core$Array$map, _function, mesh.aI)
+			U: mesh.U,
+			aG: A2(elm$core$Array$map, _function, mesh.aG)
 		};
 	});
 var ianmackenzie$elm_triangular_mesh$TriangularMesh$triangles = function (faceVertices_) {
 	return {
-		V: A2(
+		U: A2(
 			elm$core$List$map,
 			function (i) {
 				return _Utils_Tuple3(3 * i, (3 * i) + 1, (3 * i) + 2);
@@ -11100,7 +11233,7 @@ var ianmackenzie$elm_triangular_mesh$TriangularMesh$triangles = function (faceVe
 				elm$core$List$range,
 				0,
 				elm$core$List$length(faceVertices_) - 1)),
-		aI: elm$core$Array$fromList(
+		aG: elm$core$Array$fromList(
 			elm$core$List$concat(
 				A2(
 					elm$core$List$map,
@@ -11316,18 +11449,6 @@ var ianmackenzie$elm_geometry$BoundingBox3d$fromExtrema = function (given) {
 		eX: A2(ianmackenzie$elm_units$Quantity$min, given.eX, given.eU)
 	};
 };
-var ianmackenzie$elm_geometry$Point3d$xCoordinate = function (_n0) {
-	var p = _n0;
-	return p.ec;
-};
-var ianmackenzie$elm_geometry$Point3d$yCoordinate = function (_n0) {
-	var p = _n0;
-	return p.ed;
-};
-var ianmackenzie$elm_geometry$Point3d$zCoordinate = function (_n0) {
-	var p = _n0;
-	return p.ee;
-};
 var ianmackenzie$elm_geometry$Triangle3d$boundingBox = function (triangle) {
 	var _n0 = ianmackenzie$elm_geometry$Triangle3d$vertices(triangle);
 	var p1 = _n0.a;
@@ -11385,14 +11506,6 @@ var author$project$Scene3d$Mesh$facets = F2(
 				A4(author$project$Scene3d$Types$Facets, bounds, givenTriangles, webGLMesh, cullBack));
 		}
 	});
-var ianmackenzie$elm_geometry$Geometry$Types$Point3d = elm$core$Basics$identity;
-var ianmackenzie$elm_geometry$Point3d$xyz = F3(
-	function (_n0, _n1, _n2) {
-		var x = _n0;
-		var y = _n1;
-		var z = _n2;
-		return {ec: x, ed: y, ee: z};
-	});
 var ianmackenzie$elm_geometry$Geometry$Types$Triangle3d = elm$core$Basics$identity;
 var ianmackenzie$elm_geometry$Triangle3d$from = F3(
 	function (p1, p2, p3) {
@@ -11441,42 +11554,42 @@ var author$project$Scene3d$Shape$block = F3(
 	});
 var ianmackenzie$elm_geometry$Direction3d$positiveX = ianmackenzie$elm_geometry$Direction3d$unsafe(
 	{ec: 1, ed: 0, ee: 0});
+var ianmackenzie$elm_geometry$Direction3d$x = ianmackenzie$elm_geometry$Direction3d$positiveX;
+var ianmackenzie$elm_geometry$Direction3d$positiveY = ianmackenzie$elm_geometry$Direction3d$unsafe(
+	{ec: 0, ed: 1, ee: 0});
+var ianmackenzie$elm_geometry$Direction3d$y = ianmackenzie$elm_geometry$Direction3d$positiveY;
+var ianmackenzie$elm_geometry$Direction3d$z = ianmackenzie$elm_geometry$Direction3d$positiveZ;
+var ianmackenzie$elm_geometry$Geometry$Types$Frame3d = elm$core$Basics$identity;
+var ianmackenzie$elm_geometry$Frame3d$unsafe = function (properties) {
+	return properties;
+};
+var ianmackenzie$elm_geometry$Frame3d$atPoint = function (point) {
+	return ianmackenzie$elm_geometry$Frame3d$unsafe(
+		{hn: point, ik: ianmackenzie$elm_geometry$Direction3d$x, io: ianmackenzie$elm_geometry$Direction3d$y, iq: ianmackenzie$elm_geometry$Direction3d$z});
+};
 var author$project$IvarConfig$ivarPlate = F6(
 	function (iw, id, columnPosition, angle, color, slot) {
-		var hi = ianmackenzie$elm_units$Length$centimeters(2.0);
-		var d = function () {
-			if (!id) {
-				return ianmackenzie$elm_units$Length$centimeters(30.0);
-			} else {
-				return ianmackenzie$elm_units$Length$centimeters(50.0);
-			}
-		}();
-		var _n0 = function () {
-			if (iw === 1) {
-				return _Utils_Tuple2(
-					ianmackenzie$elm_units$Length$centimeters(83.0),
-					ianmackenzie$elm_units$Length$centimeters((83.0 + 1.0) / 2.0));
-			} else {
-				return _Utils_Tuple2(
-					ianmackenzie$elm_units$Length$centimeters(42.0),
-					ianmackenzie$elm_units$Length$centimeters((42.0 + 1.0) / 2.0));
-			}
-		}();
-		var w = _n0.a;
-		var offset = _n0.b;
+		var wInCm = author$project$IvarConfig$widthInCm(iw);
+		var w = ianmackenzie$elm_units$Length$centimeters(wInCm);
 		var plateMesh = author$project$Scene3d$Mesh$enableShadows(
-			A3(author$project$Scene3d$Shape$block, w, d, hi));
+			A3(
+				author$project$Scene3d$Shape$block,
+				w,
+				ianmackenzie$elm_units$Length$centimeters(
+					author$project$IvarConfig$depthInCm(id)),
+				author$project$IvarConfig$plateHeight));
+		var offset = ianmackenzie$elm_units$Length$centimeters((wInCm + author$project$IvarConfig$gapInCm) / 2.0);
 		return A3(
 			author$project$Scene3d$Drawable$translateIn,
 			ianmackenzie$elm_geometry$Direction3d$positiveZ,
-			ianmackenzie$elm_units$Length$centimeters((slot + 1) * 3.2),
+			ianmackenzie$elm_units$Length$centimeters((slot + 1) * author$project$IvarConfig$slotStepInCm),
 			A3(
 				author$project$Scene3d$Drawable$translateIn,
 				ianmackenzie$elm_geometry$Direction3d$positiveX,
 				offset,
 				A2(
-					author$project$Scene3d$Drawable$translateBy,
-					columnPosition,
+					author$project$Scene3d$Drawable$placeIn,
+					ianmackenzie$elm_geometry$Frame3d$atPoint(columnPosition),
 					A2(
 						author$project$Scene3d$Drawable$withShadow,
 						plateMesh,
@@ -11487,66 +11600,33 @@ var author$project$IvarConfig$ivarPlate = F6(
 	});
 var ianmackenzie$elm_geometry$Direction3d$negativeY = ianmackenzie$elm_geometry$Direction3d$unsafe(
 	{ec: 0, ed: -1, ee: 0});
-var ianmackenzie$elm_geometry$Direction3d$positiveY = ianmackenzie$elm_geometry$Direction3d$unsafe(
-	{ec: 0, ed: 1, ee: 0});
 var author$project$IvarConfig$ivarStand = F5(
 	function (ih, id, columnPosition, angle, color) {
 		var w2 = ianmackenzie$elm_units$Length$centimeters(3.5);
 		var w1 = ianmackenzie$elm_units$Length$centimeters(2.0);
 		var mat = {c_: color, dC: false, dW: 0.8};
 		var hs = ianmackenzie$elm_units$Length$centimeters(4.0);
+		var hInCm = author$project$IvarConfig$heightInCm(ih);
+		var frame = ianmackenzie$elm_geometry$Frame3d$atPoint(columnPosition);
 		var d1 = ianmackenzie$elm_units$Length$centimeters(2.0);
-		var _n0 = function () {
-			switch (ih) {
-				case 0:
-					return _Utils_Tuple2(
-						ianmackenzie$elm_units$Length$centimeters(12.0),
-						ianmackenzie$elm_units$Length$centimeters(218.0));
-				case 1:
-					return _Utils_Tuple2(
-						ianmackenzie$elm_units$Length$centimeters(12.0),
-						ianmackenzie$elm_units$Length$centimeters(171.0));
-				default:
-					return _Utils_Tuple2(
-						ianmackenzie$elm_units$Length$centimeters(12.0),
-						ianmackenzie$elm_units$Length$centimeters(116.0));
-			}
-		}();
+		var d = author$project$IvarConfig$depthInCm(id);
+		var _n0 = _Utils_Tuple2(
+			ianmackenzie$elm_units$Length$centimeters(12.0),
+			ianmackenzie$elm_units$Length$centimeters(hInCm - 8.0));
 		var zBottom = _n0.a;
 		var zTop = _n0.b;
-		var _n2 = function () {
-			if (!id) {
-				return _Utils_Tuple2(
-					ianmackenzie$elm_units$Length$centimeters(30.0),
-					ianmackenzie$elm_units$Length$centimeters(15.0 + 1.0));
-			} else {
-				return _Utils_Tuple2(
-					ianmackenzie$elm_units$Length$centimeters(50.0),
-					ianmackenzie$elm_units$Length$centimeters(25.0 + 1.0));
-			}
-		}();
-		var pd = _n2.a;
-		var pd2 = _n2.b;
+		var _n1 = _Utils_Tuple2(
+			ianmackenzie$elm_units$Length$centimeters(d),
+			ianmackenzie$elm_units$Length$centimeters((d / 2.0) + author$project$IvarConfig$gapInCm));
+		var pd = _n1.a;
+		var pd2 = _n1.b;
 		var stickMesh = author$project$Scene3d$Mesh$enableShadows(
 			A3(author$project$Scene3d$Shape$block, w1, pd, hs));
-		var _n4 = function () {
-			switch (ih) {
-				case 0:
-					return _Utils_Tuple2(
-						ianmackenzie$elm_units$Length$centimeters(226.0),
-						ianmackenzie$elm_units$Length$centimeters(113.0));
-				case 1:
-					return _Utils_Tuple2(
-						ianmackenzie$elm_units$Length$centimeters(179.0),
-						ianmackenzie$elm_units$Length$centimeters(89.5));
-				default:
-					return _Utils_Tuple2(
-						ianmackenzie$elm_units$Length$centimeters(124.0),
-						ianmackenzie$elm_units$Length$centimeters(62.0));
-			}
-		}();
-		var h = _n4.a;
-		var h2 = _n4.b;
+		var _n2 = _Utils_Tuple2(
+			ianmackenzie$elm_units$Length$centimeters(hInCm),
+			ianmackenzie$elm_units$Length$centimeters(hInCm / 2.0));
+		var h = _n2.a;
+		var h2 = _n2.b;
 		var poleMesh = author$project$Scene3d$Mesh$enableShadows(
 			A3(author$project$Scene3d$Shape$block, w2, d1, h));
 		return _List_fromArray(
@@ -11560,8 +11640,8 @@ var author$project$IvarConfig$ivarStand = F5(
 					ianmackenzie$elm_geometry$Direction3d$negativeY,
 					pd2,
 					A2(
-						author$project$Scene3d$Drawable$translateBy,
-						columnPosition,
+						author$project$Scene3d$Drawable$placeIn,
+						frame,
 						A2(
 							author$project$Scene3d$Drawable$withShadow,
 							poleMesh,
@@ -11575,8 +11655,8 @@ var author$project$IvarConfig$ivarStand = F5(
 					ianmackenzie$elm_geometry$Direction3d$positiveY,
 					pd2,
 					A2(
-						author$project$Scene3d$Drawable$translateBy,
-						columnPosition,
+						author$project$Scene3d$Drawable$placeIn,
+						frame,
 						A2(
 							author$project$Scene3d$Drawable$withShadow,
 							poleMesh,
@@ -11586,8 +11666,8 @@ var author$project$IvarConfig$ivarStand = F5(
 				ianmackenzie$elm_geometry$Direction3d$positiveZ,
 				zTop,
 				A2(
-					author$project$Scene3d$Drawable$translateBy,
-					columnPosition,
+					author$project$Scene3d$Drawable$placeIn,
+					frame,
 					A2(
 						author$project$Scene3d$Drawable$withShadow,
 						stickMesh,
@@ -11597,8 +11677,8 @@ var author$project$IvarConfig$ivarStand = F5(
 				ianmackenzie$elm_geometry$Direction3d$positiveZ,
 				zBottom,
 				A2(
-					author$project$Scene3d$Drawable$translateBy,
-					columnPosition,
+					author$project$Scene3d$Drawable$placeIn,
+					frame,
 					A2(
 						author$project$Scene3d$Drawable$withShadow,
 						stickMesh,
@@ -11628,7 +11708,7 @@ var author$project$IvarConfig$drawItem = F6(
 		}
 	});
 var avh4$elm_color$Color$white = A4(avh4$elm_color$Color$RgbaSpace, 255 / 255, 255 / 255, 255 / 255, 1.0);
-var ianmackenzie$elm_geometry$Vector3d$meters = F3(
+var ianmackenzie$elm_geometry$Point3d$meters = F3(
 	function (x, y, z) {
 		return {ec: x, ed: y, ee: z};
 	});
@@ -11639,8 +11719,9 @@ var author$project$IvarConfig$floor = function () {
 		ianmackenzie$elm_units$Length$meters(3),
 		ianmackenzie$elm_units$Length$centimeters(1));
 	return A2(
-		author$project$Scene3d$Drawable$translateBy,
-		A3(ianmackenzie$elm_geometry$Vector3d$meters, 0, 0, -1.0e-2),
+		author$project$Scene3d$Drawable$placeIn,
+		ianmackenzie$elm_geometry$Frame3d$atPoint(
+			A3(ianmackenzie$elm_geometry$Point3d$meters, 0, 0, -1.0e-2)),
 		A2(
 			author$project$Scene3d$Drawable$physical,
 			{c_: avh4$elm_color$Color$white, dC: false, dW: 0.25},
@@ -11677,10 +11758,7 @@ var ianmackenzie$elm_geometry$Axis3d$through = F2(
 	function (givenPoint, givenDirection) {
 		return {aa: givenDirection, hn: givenPoint};
 	});
-var ianmackenzie$elm_geometry$Direction3d$x = ianmackenzie$elm_geometry$Direction3d$positiveX;
-var ianmackenzie$elm_geometry$Point3d$origin = {ec: 0, ed: 0, ee: 0};
 var ianmackenzie$elm_geometry$Axis3d$x = A2(ianmackenzie$elm_geometry$Axis3d$through, ianmackenzie$elm_geometry$Point3d$origin, ianmackenzie$elm_geometry$Direction3d$x);
-var ianmackenzie$elm_geometry$Direction3d$z = ianmackenzie$elm_geometry$Direction3d$positiveZ;
 var ianmackenzie$elm_geometry$Axis3d$z = A2(ianmackenzie$elm_geometry$Axis3d$through, ianmackenzie$elm_geometry$Point3d$origin, ianmackenzie$elm_geometry$Direction3d$z);
 var ianmackenzie$elm_geometry$Direction3d$negativeZ = ianmackenzie$elm_geometry$Direction3d$unsafe(
 	{ec: 0, ed: 0, ee: -1});
@@ -12020,8 +12098,6 @@ var ianmackenzie$elm_3d_camera$Camera3d$viewpoint = function (_n0) {
 	var camera = _n0;
 	return camera.id;
 };
-var ianmackenzie$elm_geometry$Direction3d$y = ianmackenzie$elm_geometry$Direction3d$positiveY;
-var ianmackenzie$elm_geometry$Geometry$Types$Frame3d = elm$core$Basics$identity;
 var ianmackenzie$elm_geometry$Frame3d$atOrigin = {hn: ianmackenzie$elm_geometry$Point3d$origin, ik: ianmackenzie$elm_geometry$Direction3d$x, io: ianmackenzie$elm_geometry$Direction3d$y, iq: ianmackenzie$elm_geometry$Direction3d$z};
 var ianmackenzie$elm_geometry$Direction3d$relativeTo = F2(
 	function (_n0, _n1) {
@@ -12035,22 +12111,6 @@ var ianmackenzie$elm_geometry$Direction3d$relativeTo = F2(
 		var i = _n4;
 		return {ec: ((d.ec * i.ec) + (d.ed * i.ed)) + (d.ee * i.ee), ed: ((d.ec * j.ec) + (d.ed * j.ed)) + (d.ee * j.ee), ee: ((d.ec * k.ec) + (d.ed * k.ed)) + (d.ee * k.ee)};
 	});
-var ianmackenzie$elm_geometry$Frame3d$originPoint = function (_n0) {
-	var properties = _n0;
-	return properties.hn;
-};
-var ianmackenzie$elm_geometry$Frame3d$xDirection = function (_n0) {
-	var properties = _n0;
-	return properties.ik;
-};
-var ianmackenzie$elm_geometry$Frame3d$yDirection = function (_n0) {
-	var properties = _n0;
-	return properties.io;
-};
-var ianmackenzie$elm_geometry$Frame3d$zDirection = function (_n0) {
-	var properties = _n0;
-	return properties.iq;
-};
 var ianmackenzie$elm_geometry$Point3d$relativeTo = F2(
 	function (_n0, _n1) {
 		var frame = _n0;
@@ -12370,9 +12430,6 @@ var ianmackenzie$elm_3d_camera$Camera3d$perspective = function (_arguments) {
 	};
 };
 var ianmackenzie$elm_3d_camera$Camera3d$Types$Viewpoint3d = elm$core$Basics$identity;
-var ianmackenzie$elm_geometry$Frame3d$unsafe = function (properties) {
-	return properties;
-};
 var ianmackenzie$elm_geometry$Point3d$rotateAround = F3(
 	function (_n0, _n1, _n2) {
 		var axis = _n0;
@@ -12449,12 +12506,6 @@ var ianmackenzie$elm_geometry$Axis3d$direction = function (_n0) {
 	var axis = _n0;
 	return axis.aa;
 };
-var ianmackenzie$elm_geometry$Point3d$translateBy = F2(
-	function (_n0, _n1) {
-		var v = _n0;
-		var p = _n1;
-		return {ec: p.ec + v.ec, ed: p.ed + v.ed, ee: p.ee + v.ee};
-	});
 var ianmackenzie$elm_geometry$Frame3d$translateBy = F2(
 	function (vector, frame) {
 		return ianmackenzie$elm_geometry$Frame3d$unsafe(
@@ -12524,10 +12575,6 @@ var ianmackenzie$elm_3d_camera$Viewpoint3d$orbit = function (_arguments) {
 			A3(ianmackenzie$elm_geometry$Frame3d$rotateAroundOwn, ianmackenzie$elm_geometry$Frame3d$yAxis, _arguments.bo, initialFrame)));
 	return finalFrame;
 };
-var ianmackenzie$elm_geometry$Point3d$meters = F3(
-	function (x, y, z) {
-		return {ec: x, ed: y, ee: z};
-	});
 var ianmackenzie$elm_geometry$Geometry$Types$SketchPlane3d = elm$core$Basics$identity;
 var ianmackenzie$elm_geometry$SketchPlane3d$unsafe = elm$core$Basics$identity;
 var ianmackenzie$elm_geometry$SketchPlane3d$xy = ianmackenzie$elm_geometry$SketchPlane3d$unsafe(
@@ -12572,8 +12619,8 @@ var mdgriffith$elm_ui$Internal$Flag$Field = F2(
 	});
 var mdgriffith$elm_ui$Internal$Flag$none = A2(mdgriffith$elm_ui$Internal$Flag$Field, 0, 0);
 var mdgriffith$elm_ui$Internal$Model$NoNearbyChildren = {$: 0};
-var mdgriffith$elm_ui$Internal$Style$classes = {fN: 'a', cW: 'atv', fQ: 'ab', fR: 'cx', fS: 'cy', fT: 'acb', fU: 'accx', fV: 'accy', fW: 'acr', eg: 'al', eh: 'ar', fX: 'at', cX: 'ah', cY: 'av', f_: 's', f5: 'bh', f6: 'b', ge: 'w7', gg: 'bd', gh: 'bdt', ck: 'bn', gi: 'bs', cp: 'cpe', gq: 'cp', gs: 'cpx', gt: 'cpy', aL: 'c', cr: 'ctr', cs: 'cb', ct: 'ccx', aM: 'ccy', bQ: 'cl', cu: 'cr', gx: 'ct', gy: 'cptr', gz: 'ctxt', gL: 'fcs', c5: 'focus-within', gO: 'fs', gR: 'g', c7: 'hbh', c8: 'hc', eC: 'he', c9: 'hf', eD: 'hfp', gW: 'hv', gY: 'ic', g_: 'fr', g1: 'iml', g2: 'imlp', g3: 'it', g7: 'i', eQ: 'lnk', bx: 'nb', e$: 'notxt', hi: 'ol', hj: 'or', bb: 'oq', ho: 'oh', e4: 'pg', e5: 'p', hp: 'ppe', hv: 'ui', an: 'r', hz: 'sb', hA: 'sbx', hB: 'sby', hC: 'sbt', hF: 'e', hG: 'cap', hH: 'sev', hO: 'sk', Y: 't', hT: 'tc', hU: 'w8', hV: 'w2', hW: 'w9', hX: 'tj', cR: 'tja', hY: 'tl', hZ: 'w3', h_: 'w5', h$: 'w4', h0: 'tr', h1: 'w6', h2: 'w1', h3: 'tun', fB: 'ts', bj: 'clr', h8: 'u', d7: 'wc', fK: 'we', d8: 'wf', fL: 'wfp', d9: 'wrp'};
-var mdgriffith$elm_ui$Internal$Model$columnClass = mdgriffith$elm_ui$Internal$Style$classes.f_ + (' ' + mdgriffith$elm_ui$Internal$Style$classes.aL);
+var mdgriffith$elm_ui$Internal$Style$classes = {fN: 'a', cW: 'atv', fQ: 'ab', fR: 'cx', fS: 'cy', fT: 'acb', fU: 'accx', fV: 'accy', fW: 'acr', eg: 'al', eh: 'ar', fX: 'at', cX: 'ah', cY: 'av', f_: 's', f5: 'bh', f6: 'b', ge: 'w7', gg: 'bd', gh: 'bdt', ck: 'bn', gi: 'bs', cp: 'cpe', gq: 'cp', gs: 'cpx', gt: 'cpy', aJ: 'c', cr: 'ctr', cs: 'cb', ct: 'ccx', aK: 'ccy', bQ: 'cl', cu: 'cr', gx: 'ct', gy: 'cptr', gz: 'ctxt', gL: 'fcs', c5: 'focus-within', gO: 'fs', gR: 'g', c7: 'hbh', c8: 'hc', eC: 'he', c9: 'hf', eD: 'hfp', gW: 'hv', gY: 'ic', g_: 'fr', g1: 'iml', g2: 'imlp', g3: 'it', g7: 'i', eQ: 'lnk', bx: 'nb', e$: 'notxt', hi: 'ol', hj: 'or', bb: 'oq', ho: 'oh', e4: 'pg', e5: 'p', hp: 'ppe', hv: 'ui', an: 'r', hz: 'sb', hA: 'sbx', hB: 'sby', hC: 'sbt', hF: 'e', hG: 'cap', hH: 'sev', hO: 'sk', Y: 't', hT: 'tc', hU: 'w8', hV: 'w2', hW: 'w9', hX: 'tj', cR: 'tja', hY: 'tl', hZ: 'w3', h_: 'w5', h$: 'w4', h0: 'tr', h1: 'w6', h2: 'w1', h3: 'tun', fB: 'ts', bj: 'clr', h8: 'u', d7: 'wc', fK: 'we', d8: 'wf', fL: 'wfp', d9: 'wrp'};
+var mdgriffith$elm_ui$Internal$Model$columnClass = mdgriffith$elm_ui$Internal$Style$classes.f_ + (' ' + mdgriffith$elm_ui$Internal$Style$classes.aJ);
 var mdgriffith$elm_ui$Internal$Model$gridClass = mdgriffith$elm_ui$Internal$Style$classes.f_ + (' ' + mdgriffith$elm_ui$Internal$Style$classes.gR);
 var mdgriffith$elm_ui$Internal$Model$pageClass = mdgriffith$elm_ui$Internal$Style$classes.f_ + (' ' + mdgriffith$elm_ui$Internal$Style$classes.e4);
 var mdgriffith$elm_ui$Internal$Model$paragraphClass = mdgriffith$elm_ui$Internal$Style$classes.f_ + (' ' + mdgriffith$elm_ui$Internal$Style$classes.e5);
@@ -13128,7 +13175,7 @@ var mdgriffith$elm_ui$Internal$Style$contentName = function (desc) {
 			return mdgriffith$elm_ui$Internal$Style$dot(mdgriffith$elm_ui$Internal$Style$classes.ct);
 		default:
 			var _n6 = desc;
-			return mdgriffith$elm_ui$Internal$Style$dot(mdgriffith$elm_ui$Internal$Style$classes.aM);
+			return mdgriffith$elm_ui$Internal$Style$dot(mdgriffith$elm_ui$Internal$Style$classes.aK);
 	}
 };
 var mdgriffith$elm_ui$Internal$Style$selfName = function (desc) {
@@ -13795,7 +13842,7 @@ var mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 						A2(mdgriffith$elm_ui$Internal$Style$Prop, 'overflow-y', 'auto'),
 						A2(
 						mdgriffith$elm_ui$Internal$Style$Descriptor,
-						mdgriffith$elm_ui$Internal$Style$dot(mdgriffith$elm_ui$Internal$Style$classes.aL),
+						mdgriffith$elm_ui$Internal$Style$dot(mdgriffith$elm_ui$Internal$Style$classes.aJ),
 						_List_fromArray(
 							[
 								A2(mdgriffith$elm_ui$Internal$Style$Prop, 'flex-shrink', '1')
@@ -14072,7 +14119,7 @@ var mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 					])),
 				A2(
 				mdgriffith$elm_ui$Internal$Style$Descriptor,
-				mdgriffith$elm_ui$Internal$Style$dot(mdgriffith$elm_ui$Internal$Style$classes.aL),
+				mdgriffith$elm_ui$Internal$Style$dot(mdgriffith$elm_ui$Internal$Style$classes.aJ),
 				_List_fromArray(
 					[
 						A2(mdgriffith$elm_ui$Internal$Style$Prop, 'display', 'flex'),
@@ -14092,7 +14139,7 @@ var mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 									])),
 								A2(
 								mdgriffith$elm_ui$Internal$Style$Descriptor,
-								mdgriffith$elm_ui$Internal$Style$dot(mdgriffith$elm_ui$Internal$Style$classes.aL),
+								mdgriffith$elm_ui$Internal$Style$dot(mdgriffith$elm_ui$Internal$Style$classes.aJ),
 								_List_fromArray(
 									[
 										A2(mdgriffith$elm_ui$Internal$Style$Prop, 'flex-basis', 'auto')
@@ -14545,7 +14592,7 @@ var mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 							])),
 						A2(
 						mdgriffith$elm_ui$Internal$Style$Child,
-						mdgriffith$elm_ui$Internal$Style$dot(mdgriffith$elm_ui$Internal$Style$classes.aL),
+						mdgriffith$elm_ui$Internal$Style$dot(mdgriffith$elm_ui$Internal$Style$classes.aJ),
 						_List_fromArray(
 							[
 								A2(mdgriffith$elm_ui$Internal$Style$Prop, 'display', 'inline-flex')
@@ -14847,7 +14894,7 @@ var mdgriffith$elm_ui$Internal$Style$overrides = '@media screen and (-ms-high-co
 var mdgriffith$elm_ui$Internal$Style$Intermediate = elm$core$Basics$identity;
 var mdgriffith$elm_ui$Internal$Style$emptyIntermediate = F2(
 	function (selector, closing) {
-		return {cq: closing, H: _List_Nil, aV: _List_Nil, aE: selector};
+		return {cq: closing, H: _List_Nil, aV: _List_Nil, aC: selector};
 	});
 var mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 	function (_n0, rulesToRender) {
@@ -14876,7 +14923,7 @@ var mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 							{
 								H: A2(
 									elm$core$List$cons,
-									{cq: '\n}', H: _List_Nil, aV: props, aE: '@supports (' + (prop + (':' + (value + (') {' + parent.aE))))},
+									{cq: '\n}', H: _List_Nil, aV: props, aC: '@supports (' + (prop + (':' + (value + (') {' + parent.aC))))},
 									rendered.H)
 							});
 					case 4:
@@ -14889,7 +14936,7 @@ var mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 									elm$core$List$cons,
 									A2(
 										mdgriffith$elm_ui$Internal$Style$renderRules,
-										A2(mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.aE + (' + ' + selector), ''),
+										A2(mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.aC + (' + ' + selector), ''),
 										adjRules),
 									rendered.H)
 							});
@@ -14903,7 +14950,7 @@ var mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 									elm$core$List$cons,
 									A2(
 										mdgriffith$elm_ui$Internal$Style$renderRules,
-										A2(mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.aE + (' > ' + child), ''),
+										A2(mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.aC + (' > ' + child), ''),
 										childRules),
 									rendered.H)
 							});
@@ -14919,7 +14966,7 @@ var mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 										mdgriffith$elm_ui$Internal$Style$renderRules,
 										A2(
 											mdgriffith$elm_ui$Internal$Style$emptyIntermediate,
-											_Utils_ap(parent.aE, descriptor),
+											_Utils_ap(parent.aC, descriptor),
 											''),
 										descriptorRules),
 									rendered.H)
@@ -14933,7 +14980,7 @@ var mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 									elm$core$List$cons,
 									A2(
 										mdgriffith$elm_ui$Internal$Style$renderRules,
-										A2(mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.aE, ''),
+										A2(mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.aC, ''),
 										batched),
 									rendered.H)
 							});
@@ -14958,7 +15005,7 @@ var mdgriffith$elm_ui$Internal$Style$renderCompact = function (styleClasses) {
 		if (!_n2.b) {
 			return '';
 		} else {
-			return rule.aE + ('{' + (renderValues(rule.aV) + (rule.cq + '}')));
+			return rule.aC + ('{' + (renderValues(rule.aV) + (rule.cq + '}')));
 		}
 	};
 	var renderIntermediate = function (_n0) {
@@ -14994,7 +15041,7 @@ var mdgriffith$elm_ui$Internal$Style$rules = _Utils_ap(
 	mdgriffith$elm_ui$Internal$Style$renderCompact(
 		_Utils_ap(mdgriffith$elm_ui$Internal$Style$baseSheet, mdgriffith$elm_ui$Internal$Style$commonValues)));
 var mdgriffith$elm_ui$Internal$Model$staticRoot = function (opts) {
-	var _n0 = opts.aC;
+	var _n0 = opts.aA;
 	switch (_n0) {
 		case 0:
 			return A3(
@@ -15352,7 +15399,7 @@ var mdgriffith$elm_ui$Internal$Model$renderStyleRule = F3(
 				var left = '.' + mdgriffith$elm_ui$Internal$Style$classes.eg;
 				var halfY = elm$core$String$fromFloat(y / 2) + 'px';
 				var halfX = elm$core$String$fromFloat(x / 2) + 'px';
-				var column = '.' + mdgriffith$elm_ui$Internal$Style$classes.aL;
+				var column = '.' + mdgriffith$elm_ui$Internal$Style$classes.aJ;
 				var _class = '.' + cls;
 				var any = '.' + mdgriffith$elm_ui$Internal$Style$classes.f_;
 				return elm$core$List$concat(
@@ -15997,7 +16044,7 @@ var mdgriffith$elm_ui$Internal$Model$toStyleSheetString = F2(
 	});
 var mdgriffith$elm_ui$Internal$Model$toStyleSheet = F2(
 	function (options, styleSheet) {
-		var _n0 = options.aC;
+		var _n0 = options.aA;
 		switch (_n0) {
 			case 0:
 				return A3(
@@ -16166,7 +16213,7 @@ var mdgriffith$elm_ui$Internal$Model$finalizeNode = F6(
 								elm$core$String$join,
 								' ',
 								_List_fromArray(
-									[mdgriffith$elm_ui$Internal$Style$classes.f_, mdgriffith$elm_ui$Internal$Style$classes.hF, mdgriffith$elm_ui$Internal$Style$classes.cr, mdgriffith$elm_ui$Internal$Style$classes.aM, mdgriffith$elm_ui$Internal$Style$classes.fW])))
+									[mdgriffith$elm_ui$Internal$Style$classes.f_, mdgriffith$elm_ui$Internal$Style$classes.hF, mdgriffith$elm_ui$Internal$Style$classes.cr, mdgriffith$elm_ui$Internal$Style$classes.aK, mdgriffith$elm_ui$Internal$Style$classes.fW])))
 						]),
 					_List_fromArray(
 						[html])) : (A2(mdgriffith$elm_ui$Internal$Flag$present, mdgriffith$elm_ui$Internal$Flag$centerX, has) ? A2(
@@ -16178,7 +16225,7 @@ var mdgriffith$elm_ui$Internal$Model$finalizeNode = F6(
 								elm$core$String$join,
 								' ',
 								_List_fromArray(
-									[mdgriffith$elm_ui$Internal$Style$classes.f_, mdgriffith$elm_ui$Internal$Style$classes.hF, mdgriffith$elm_ui$Internal$Style$classes.cr, mdgriffith$elm_ui$Internal$Style$classes.aM, mdgriffith$elm_ui$Internal$Style$classes.fU])))
+									[mdgriffith$elm_ui$Internal$Style$classes.f_, mdgriffith$elm_ui$Internal$Style$classes.hF, mdgriffith$elm_ui$Internal$Style$classes.cr, mdgriffith$elm_ui$Internal$Style$classes.aK, mdgriffith$elm_ui$Internal$Style$classes.fU])))
 						]),
 					_List_fromArray(
 						[html])) : html));
@@ -16776,7 +16823,7 @@ var mdgriffith$elm_ui$Internal$Model$renderHeight = function (h) {
 					[
 						A3(
 						mdgriffith$elm_ui$Internal$Model$Single,
-						mdgriffith$elm_ui$Internal$Style$classes.f_ + ('.' + (mdgriffith$elm_ui$Internal$Style$classes.aL + (' > ' + mdgriffith$elm_ui$Internal$Style$dot(
+						mdgriffith$elm_ui$Internal$Style$classes.f_ + ('.' + (mdgriffith$elm_ui$Internal$Style$classes.aJ + (' > ' + mdgriffith$elm_ui$Internal$Style$dot(
 							'height-fill-' + elm$core$String$fromInt(portion))))),
 						'flex-grow',
 						elm$core$String$fromInt(portion * 100000))
@@ -17379,7 +17426,7 @@ var mdgriffith$elm_ui$Internal$Model$gatherAttrRecursive = F8(
 											elm$core$List$cons,
 											A3(
 												mdgriffith$elm_ui$Internal$Model$Single,
-												mdgriffith$elm_ui$Internal$Style$classes.f_ + ('.' + (mdgriffith$elm_ui$Internal$Style$classes.aL + (' > ' + mdgriffith$elm_ui$Internal$Style$dot(
+												mdgriffith$elm_ui$Internal$Style$classes.f_ + ('.' + (mdgriffith$elm_ui$Internal$Style$classes.aJ + (' > ' + mdgriffith$elm_ui$Internal$Style$dot(
 													'height-fill-' + elm$core$String$fromInt(portion))))),
 												'flex-grow',
 												elm$core$String$fromInt(portion * 100000)),
@@ -17883,7 +17930,7 @@ var mdgriffith$elm_ui$Element$downloadAs = F2(
 								mdgriffith$elm_ui$Internal$Model$htmlClass(mdgriffith$elm_ui$Internal$Style$classes.ct),
 								A2(
 									elm$core$List$cons,
-									mdgriffith$elm_ui$Internal$Model$htmlClass(mdgriffith$elm_ui$Internal$Style$classes.aM),
+									mdgriffith$elm_ui$Internal$Model$htmlClass(mdgriffith$elm_ui$Internal$Style$classes.aK),
 									attrs)))))),
 			mdgriffith$elm_ui$Internal$Model$Unkeyed(
 				_List_fromArray(
@@ -18023,12 +18070,12 @@ var mdgriffith$elm_ui$Internal$Model$optionsToRecord = function (options) {
 					}
 				default:
 					var renderMode = opt.a;
-					var _n6 = record.aC;
+					var _n6 = record.aA;
 					if (_n6.$ === 1) {
 						return _Utils_update(
 							record,
 							{
-								aC: elm$core$Maybe$Just(renderMode)
+								aA: elm$core$Maybe$Just(renderMode)
 							});
 					} else {
 						return record;
@@ -18055,8 +18102,8 @@ var mdgriffith$elm_ui$Internal$Model$optionsToRecord = function (options) {
 					return hoverable;
 				}
 			}(),
-			aC: function () {
-				var _n2 = record.aC;
+			aA: function () {
+				var _n2 = record.aA;
 				if (_n2.$ === 1) {
 					return 0;
 				} else {
@@ -18070,7 +18117,7 @@ var mdgriffith$elm_ui$Internal$Model$optionsToRecord = function (options) {
 		A3(
 			elm$core$List$foldr,
 			combine,
-			{gL: elm$core$Maybe$Nothing, gW: elm$core$Maybe$Nothing, aC: elm$core$Maybe$Nothing},
+			{gL: elm$core$Maybe$Nothing, gW: elm$core$Maybe$Nothing, aA: elm$core$Maybe$Nothing},
 			options));
 };
 var mdgriffith$elm_ui$Internal$Model$toHtml = F2(
@@ -18097,7 +18144,7 @@ var mdgriffith$elm_ui$Internal$Model$renderRoot = F3(
 	function (optionList, attributes, child) {
 		var options = mdgriffith$elm_ui$Internal$Model$optionsToRecord(optionList);
 		var embedStyle = function () {
-			var _n0 = options.aC;
+			var _n0 = options.aA;
 			if (_n0 === 1) {
 				return mdgriffith$elm_ui$Internal$Model$OnlyDynamic(options);
 			} else {
@@ -18285,7 +18332,7 @@ var mdgriffith$elm_ui$Element$row = F2(
 			mdgriffith$elm_ui$Internal$Model$div,
 			A2(
 				elm$core$List$cons,
-				mdgriffith$elm_ui$Internal$Model$htmlClass(mdgriffith$elm_ui$Internal$Style$classes.bQ + (' ' + mdgriffith$elm_ui$Internal$Style$classes.aM)),
+				mdgriffith$elm_ui$Internal$Model$htmlClass(mdgriffith$elm_ui$Internal$Style$classes.bQ + (' ' + mdgriffith$elm_ui$Internal$Style$classes.aK)),
 				A2(
 					elm$core$List$cons,
 					mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$shrink),
@@ -18394,7 +18441,7 @@ var mdgriffith$elm_ui$Element$Input$button = F2(
 					mdgriffith$elm_ui$Element$height(mdgriffith$elm_ui$Element$shrink),
 					A2(
 						elm$core$List$cons,
-						mdgriffith$elm_ui$Internal$Model$htmlClass(mdgriffith$elm_ui$Internal$Style$classes.ct + (' ' + (mdgriffith$elm_ui$Internal$Style$classes.aM + (' ' + (mdgriffith$elm_ui$Internal$Style$classes.hC + (' ' + mdgriffith$elm_ui$Internal$Style$classes.e$)))))),
+						mdgriffith$elm_ui$Internal$Model$htmlClass(mdgriffith$elm_ui$Internal$Style$classes.ct + (' ' + (mdgriffith$elm_ui$Internal$Style$classes.aK + (' ' + (mdgriffith$elm_ui$Internal$Style$classes.hC + (' ' + mdgriffith$elm_ui$Internal$Style$classes.e$)))))),
 						A2(
 							elm$core$List$cons,
 							mdgriffith$elm_ui$Element$pointer,
@@ -18658,7 +18705,7 @@ var pablohirafuji$elm_qrcode$QRCode$Encode$charCountIndicator = F2(
 	function (_n0, bits) {
 		var groupInfo = _n0.a5;
 		var inputStr = _n0.da;
-		var mode = _n0.aC;
+		var mode = _n0.aA;
 		var length = A2(pablohirafuji$elm_qrcode$QRCode$Encode$charCountIndicatorLength, mode, groupInfo.d6);
 		var charCount = (mode === 3) ? elm$core$List$length(bits) : elm$core$String$length(inputStr);
 		return _Utils_Tuple2(charCount, length);
@@ -18691,7 +18738,7 @@ var pablohirafuji$elm_qrcode$QRCode$Encode$addInfoAndFinalBits = function (_n0) 
 					A2(
 						elm$core$List$cons,
 						_Utils_Tuple2(
-							pablohirafuji$elm_qrcode$QRCode$Encode$modeIndicator(model.aC),
+							pablohirafuji$elm_qrcode$QRCode$Encode$modeIndicator(model.aA),
 							4),
 						A2(
 							elm$core$List$cons,
@@ -20655,7 +20702,7 @@ var pablohirafuji$elm_qrcode$QRCode$Encode$versionToModel = F5(
 			eu: ecLevel,
 			a5: groupInfo,
 			da: inputStr,
-			aC: mode
+			aA: mode
 		};
 	});
 var pablohirafuji$elm_qrcode$QRCode$Encode$selectVersion = F4(
@@ -20786,15 +20833,15 @@ var pablohirafuji$elm_qrcode$QRCode$Matrix$isOccupy = F4(
 var pablohirafuji$elm_qrcode$QRCode$Matrix$nextModule = function (placement) {
 	var row = placement.an;
 	var col = placement.gu;
-	var isRight = placement.ax;
+	var isRight = placement.aw;
 	var isUp = placement.bZ;
 	return isRight ? _Utils_update(
 		placement,
-		{gu: col - 1, ax: false}) : (isUp ? _Utils_update(
+		{gu: col - 1, aw: false}) : (isUp ? _Utils_update(
 		placement,
-		{gu: col + 1, ax: true, an: row - 1}) : _Utils_update(
+		{gu: col + 1, aw: true, an: row - 1}) : _Utils_update(
 		placement,
-		{gu: col + 1, ax: true, an: row + 1}));
+		{gu: col + 1, aw: true, an: row + 1}));
 };
 var pablohirafuji$elm_qrcode$QRCode$Matrix$bitToColor = F2(
 	function (_byte, offset) {
@@ -20839,7 +20886,7 @@ var pablohirafuji$elm_qrcode$QRCode$Matrix$addDataModule = F4(
 					if (col === 6) {
 						var $temp$placement = _Utils_update(
 							placement,
-							{gu: col - 1, ax: true}),
+							{gu: col - 1, aw: true}),
 							$temp$bytes = bytes,
 							$temp$offset = offset,
 							$temp$matrix = matrix;
@@ -20852,7 +20899,7 @@ var pablohirafuji$elm_qrcode$QRCode$Matrix$addDataModule = F4(
 						if (row < 0) {
 							var $temp$placement = _Utils_update(
 								placement,
-								{gu: col - 2, ax: true, bZ: false, an: 0}),
+								{gu: col - 2, aw: true, bZ: false, an: 0}),
 								$temp$bytes = bytes,
 								$temp$offset = offset,
 								$temp$matrix = matrix;
@@ -20865,7 +20912,7 @@ var pablohirafuji$elm_qrcode$QRCode$Matrix$addDataModule = F4(
 							if (_Utils_cmp(row, size) > -1) {
 								var $temp$placement = _Utils_update(
 									placement,
-									{gu: col - 2, ax: true, bZ: true, an: size - 1}),
+									{gu: col - 2, aw: true, bZ: true, an: size - 1}),
 									$temp$bytes = bytes,
 									$temp$offset = offset,
 									$temp$matrix = matrix;
@@ -20904,7 +20951,7 @@ var pablohirafuji$elm_qrcode$QRCode$Matrix$addDataModule = F4(
 		}
 	});
 var pablohirafuji$elm_qrcode$QRCode$Matrix$initPlacement = function (size) {
-	return {gu: size + 1, ax: true, bZ: true, an: size + 1, dZ: size};
+	return {gu: size + 1, aw: true, bZ: true, an: size + 1, dZ: size};
 };
 var pablohirafuji$elm_qrcode$QRCode$Matrix$addData = F3(
 	function (size, bytes, matrix) {
@@ -21887,46 +21934,37 @@ var author$project$IvarConfig$view = function (model) {
 					elm$core$Maybe$Just(i));
 				var _n2 = function () {
 					if (item.$ === 1) {
-						if (item.b === 1) {
-							var ih = item.a;
-							var _n4 = item.b;
-							return _Utils_Tuple2(
-								A2(author$project$IvarConfig$maxIvarHeight, ih, state.az),
-								A5(
-									author$project$IvarConfig$State,
-									A2(
-										ianmackenzie$elm_geometry$Vector3d$plus,
-										state.P,
-										A3(ianmackenzie$elm_geometry$Vector3d$centimeters, 83.0 + 1.0, 0, 0)),
-									model.ar,
-									ianmackenzie$elm_units$Angle$degrees(0),
-									ih,
-									isSelected));
-						} else {
-							var ih = item.a;
-							var _n5 = item.b;
-							return _Utils_Tuple2(
-								A2(author$project$IvarConfig$maxIvarHeight, ih, state.az),
-								A5(
-									author$project$IvarConfig$State,
-									A2(
-										ianmackenzie$elm_geometry$Vector3d$plus,
-										state.P,
-										A3(ianmackenzie$elm_geometry$Vector3d$centimeters, 42.0 + 1.0, 0, 0)),
-									model.ar,
-									ianmackenzie$elm_units$Angle$degrees(0),
-									ih,
-									isSelected));
-						}
+						var ih = item.a;
+						var width = item.b;
+						var w = function () {
+							if (width === 1) {
+								return 83.0;
+							} else {
+								return 42.0;
+							}
+						}();
+						var nextPoint = A2(
+							ianmackenzie$elm_geometry$Point3d$translateBy,
+							A3(ianmackenzie$elm_geometry$Vector3d$centimeters, w + 1.0, 0, 0),
+							state.W);
+						return _Utils_Tuple2(
+							A2(author$project$IvarConfig$maxIvarHeight, ih, state.aR),
+							A5(
+								author$project$IvarConfig$State,
+								nextPoint,
+								model.aL,
+								ianmackenzie$elm_units$Angle$degrees(0),
+								ih,
+								isSelected));
 					} else {
 						var ih = item.a;
 						var it = item.b;
 						return _Utils_Tuple2(
-							A2(author$project$IvarConfig$maxIvarHeight, ih, state.az),
+							A2(author$project$IvarConfig$maxIvarHeight, ih, state.aR),
 							A5(
 								author$project$IvarConfig$State,
-								state.P,
-								model.ar,
+								state.W,
+								model.aL,
 								ianmackenzie$elm_units$Angle$degrees(0),
 								ih,
 								isSelected));
@@ -21936,30 +21974,34 @@ var author$project$IvarConfig$view = function (model) {
 				var nextState = _n2.b;
 				return _Utils_Tuple2(
 					nextState,
-					A6(author$project$IvarConfig$drawItem, isSelected, currHeight, model.as, state.P, state.ci, item));
+					A6(author$project$IvarConfig$drawItem, isSelected, currHeight, model.ar, state.W, state.ci, item));
 			}),
 		A5(
 			author$project$IvarConfig$State,
-			ianmackenzie$elm_geometry$Vector3d$zero,
-			model.ar,
+			ianmackenzie$elm_geometry$Point3d$origin,
+			model.aL,
 			ianmackenzie$elm_units$Angle$degrees(0),
 			2,
 			false),
 		A2(elm$core$List$indexedMap, elm$core$Tuple$pair, model.e));
 	var endState = _n0.a;
 	var drawnItems = _n0.b;
+	var placeOffset = A2(
+		ianmackenzie$elm_geometry$Vector3d$scaleBy,
+		-0.5,
+		A2(ianmackenzie$elm_geometry$Vector3d$from, ianmackenzie$elm_geometry$Point3d$origin, endState.W));
 	var drawnItemsWithLastStand = A2(
 		author$project$Scene3d$Drawable$translateBy,
-		A2(ianmackenzie$elm_geometry$Vector3d$scaleBy, -0.5, endState.P),
+		placeOffset,
 		author$project$Scene3d$Drawable$group(
 			elm$core$List$concat(
 				A2(
 					elm$core$List$cons,
 					A5(
 						author$project$IvarConfig$ivarStand,
-						endState.az,
-						model.as,
-						endState.P,
+						endState.aR,
+						model.ar,
+						endState.W,
 						endState.ci,
 						endState.eI ? author$project$IvarConfig$highlightColumnColor : author$project$IvarConfig$itemColor),
 					drawnItems))));
@@ -21980,7 +22022,7 @@ var author$project$IvarConfig$view = function (model) {
 			_List_fromArray(
 				[
 					mdgriffith$elm_ui$Element$inFront(
-					(model.at !== '') ? A2(
+					(model.as !== '') ? A2(
 						mdgriffith$elm_ui$Element$row,
 						_List_fromArray(
 							[
@@ -22006,7 +22048,7 @@ var author$project$IvarConfig$view = function (model) {
 											A2(
 												elm$core$Result$map,
 												pablohirafuji$elm_qrcode$QRCode$toSvg,
-												pablohirafuji$elm_qrcode$QRCode$encode(model.at)))
+												pablohirafuji$elm_qrcode$QRCode$encode(model.as)))
 										])))
 							])) : mdgriffith$elm_ui$Element$none),
 					mdgriffith$elm_ui$Element$inFront(
@@ -22031,7 +22073,7 @@ var author$project$IvarConfig$view = function (model) {
 									]),
 								_List_fromArray(
 									[
-										(model.at === '') ? A2(
+										(model.as === '') ? A2(
 										mdgriffith$elm_ui$Element$row,
 										_List_fromArray(
 											[
@@ -22096,7 +22138,7 @@ var author$project$IvarConfig$view = function (model) {
 																mdgriffith$elm_ui$Element$px(54))
 															]),
 														{es: 'AR Quicklook button', ft: 'assets/arkit-icon.svg'}),
-													ia: model.at
+													ia: model.as
 												})
 											]))
 									])),
@@ -22120,13 +22162,13 @@ var author$project$IvarConfig$view = function (model) {
 												author$project$IvarConfig$AddLeft(
 													A4(
 														author$project$IvarConfig$IvarColumn,
-														model.aO,
+														model.aN,
 														model.a4,
 														0,
 														_List_fromArray(
 															[
 																1,
-																author$project$IvarConfig$maxSlot(model.aO)
+																author$project$IvarConfig$maxSlot(model.aN)
 															]))))
 										})
 									])),
@@ -22295,13 +22337,13 @@ var author$project$IvarConfig$view = function (model) {
 												author$project$IvarConfig$AddRight(
 													A4(
 														author$project$IvarConfig$IvarColumn,
-														model.aO,
+														model.aN,
 														model.a4,
 														0,
 														_List_fromArray(
 															[
 																1,
-																author$project$IvarConfig$maxSlot(model.aO)
+																author$project$IvarConfig$maxSlot(model.aN)
 															]))))
 										})
 									]))
