@@ -11,9 +11,9 @@ import Frame3d
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events exposing (..)
---import Html.Events.Extra.Pointer as Pointer
---import Html.Events.Extra.Touch as Touch
---import Html.Events.Extra.Mouse as Mouse
+import Html.Events.Extra.Pointer as Pointer
+import Html.Events.Extra.Touch as Touch
+import Html.Events.Extra.Mouse as Mouse
 import Illuminance exposing (lux)
 import Json.Decode as Decode exposing (Decoder)
 import Length exposing (Meters, meters, centimeters)
@@ -206,7 +206,15 @@ scanl f b xs =
 type alias Model =
     { azimuth : Angle
     , elevation : Angle
-    , orbiting : Bool
+    , distance : Float
+
+    , touchStarted : List Touch.Touch 
+    , touchMoveActive : Bool
+
+    , moveStartedX : Float
+    , moveStartedY : Float
+    , mouseMoveActive : Bool
+
     , supportsArKit : Bool
     , lastError : Maybe String
     , currentSeed : Seed
@@ -223,9 +231,21 @@ type alias Model =
 
 
 type Msg
+    {-
     = MouseDown
     | MouseUp
     | MouseMove Float Float
+-}
+    = StartMove ( Float, Float )
+    | Move ( Float, Float )
+    | EndMove ( Float, Float )
+    | CancelMove ( Float, Float )
+
+    | StartMoveList (List Touch.Touch)
+    | MoveList (List Touch.Touch)
+    | EndMoveList (List Touch.Touch)
+    | CancelMoveList (List Touch.Touch)
+
     | Export
     | ClearDownloadUrl
     | GotUrl (Result Http.Error String)
@@ -264,7 +284,12 @@ init flags =
     in
     ( { azimuth = Angle.degrees 235
       , elevation = Angle.degrees 30
-      , orbiting = False
+      , distance = 8
+      , touchStarted = []
+      , touchMoveActive = False
+      , moveStartedX = 0.0
+      , moveStartedY = 0.0
+      , mouseMoveActive = False
       , supportsArKit = supportsArKit flags.userAgent
       , lastError = Nothing
       , currentSeed = startSeed
@@ -285,26 +310,117 @@ init flags =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
-        MouseDown ->
-            ( { model | orbiting = True }, Cmd.none )
+        StartMoveList touches ->
+            ( { model 
+              | touchStarted = touches 
+              , touchMoveActive = True
+              }
+            , Cmd.none
+            )
 
-        MouseUp ->
-            ( { model | orbiting = False }, Cmd.none )
+        EndMoveList _ ->
+            ( { model 
+              | touchStarted = []
+              , touchMoveActive = False
+              }
+            , Cmd.none
+            )
+        CancelMoveList _ ->
+            ( { model 
+              | touchStarted = []
+              , touchMoveActive = False
+              }
+            , Cmd.none
+            )
+        MoveList touches ->
+            if model.touchMoveActive then
+                case (touches, model.touchStarted) of 
+                    ([endPos],[startPos]) -> 
+                        let
+                            (x, y) = endPos.clientPos
+                            (startX, startY) = startPos.clientPos
+                            pan  = (x - startX)
+                            tilt = (y - startY)
+                            newAzimuth = model.azimuth |> Quantity.minus (Angle.degrees pan)
+                            newElevation =
+                                model.elevation
+                                    |> Quantity.plus (Angle.degrees tilt)
+                                    |> Quantity.clamp
+                                        (Angle.degrees 10)
+                                        (Angle.degrees 85)
+                        in
+                        ( { model 
+                          | touchStarted = touches
+                          , azimuth = newAzimuth
+                          , elevation = newElevation
+                          }
+                        , Cmd.none 
+                        )
+                    ([endA, endB], [startA, startB]) ->
+                        let
+                            distEnd   = touchDistance endA   endB
+                            distStart = touchDistance startA startB
+                            quot = ((distStart / distEnd) - 1.0)
+                        in 
+                        if quot > 0.005 || quot < -0.005
+                            then
+                                let
+                                    newDistance = model.distance * (1.0 + quot)
+                                in
+                                ( { model 
+                                  | touchStarted = touches
+                                  , distance = newDistance
+                                  }
+                                , Cmd.none
+                                )
+                            else 
+                                let
+                                    c = 3 -- 6
+                                    (x, y) = endA.clientPos
+                                    (startX, startY) = startA.clientPos
+                                    panX =  (x - startX) / c
+                                    panY = -(y - startY) / c
+                                in
+                                -- pan
+                                ( { model | touchStarted = touches }, Cmd.none )
+                    _ -> ( { model | touchStarted = touches }, Cmd.none)
+            else
+                ( model, Cmd.none )
 
-        MouseMove dx dy ->
-            if model.orbiting then
+        StartMove (startX, starY) ->
+            ( { model 
+              | mouseMoveActive = True 
+              , moveStartedX = startX
+              , moveStartedY = starY
+              }
+            , Cmd.none 
+            )
+        EndMove _ ->
+            ( { model | mouseMoveActive = False }, Cmd.none)
+        CancelMove _ ->
+            ( { model | mouseMoveActive = False }, Cmd.none)
+
+        Move ( x, y ) ->
+            if model.mouseMoveActive then
                 let
+                    dx = model.moveStartedX - x
+                    dy = model.moveStartedY - y
                     newAzimuth =
-                        model.azimuth |> Quantity.minus (Angle.degrees dx)
+                        model.azimuth |> Quantity.plus (Angle.degrees dx)
 
                     newElevation =
                         model.elevation
-                            |> Quantity.plus (Angle.degrees dy)
+                            |> Quantity.minus (Angle.degrees dy)
                             |> Quantity.clamp
                                 (Angle.degrees 10)
                                 (Angle.degrees 85)
                 in
-                ( { model | azimuth = newAzimuth, elevation = newElevation }
+                ( { model 
+                  | azimuth = newAzimuth
+                  , elevation = newElevation 
+                  , moveStartedX = x
+                  , moveStartedY = y
+                  }
                 , Cmd.none
                 )
             else
@@ -637,7 +753,7 @@ update message model =
             , Cmd.none
             )
 
-
+{-
 decodeMouseMove : Decoder Msg
 decodeMouseMove =
     Decode.map2 MouseMove
@@ -652,28 +768,16 @@ subscriptions model =
             [ Browser.Events.onMouseMove decodeMouseMove
             , Browser.Events.onMouseUp (Decode.succeed MouseUp)
             ]
-
     else
         Browser.Events.onMouseDown (Decode.succeed MouseDown)
-
-
-{-
--- relative displacement, rotation and height per element
-summedPlacements : List Ivar -> List { pos : Vector3d Meters World, rot : Angle }
-summedPlacements il =
-  scanl
-    (\p1 p2 -> { pos=Vector3d.plus p1.pos p2.pos, rot=Angle.degrees ((Angle.inDegrees p1.rot)+(Angle.inDegrees p2.rot)) } )
-    { pos = Vector3d.zero, rot=Angle.degrees 0 }
-    ( List.map         
-        ( \ivar ->
-          case ivar of
-            IvarCorner h TurnRight _ _ -> { pos= Vector3d.centimeters  83        0 0, rot= Angle.degrees  90.0 }
-            IvarCorner h TurnLeft  _ _ -> { pos= Vector3d.centimeters  83        0 0, rot= Angle.degrees -90.0 }
-            IvarColumn h Wide      _ _ -> { pos= Vector3d.centimeters (83.0+1.0) 0 0, rot= Angle.degrees  0.0  }
-            IvarColumn h Narrow    _ _ -> { pos= Vector3d.centimeters (42.0+1.0) 0 0, rot= Angle.degrees  0.0  }
-        ) il
-    )
 -}
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Sub.batch
+    [ --onResize ResizeWindow
+    ]
+
 
 -- USDA related with UpAxis="Y"
 
@@ -1344,6 +1448,31 @@ populateWorld columnSelected currentSeed depth basket =
     ( floor :: [drawnItemsWithLastStand]
     )
 
+-- TOUCH helper
+
+touchList : Touch.Event -> List Touch.Touch
+touchList touchEvent =
+  touchEvent.touches
+
+
+touchDistance : Touch.Touch -> Touch.Touch -> Float
+touchDistance a b =
+  let
+    (x1, y1) = a.clientPos
+    (x2, y2) = b.clientPos
+  in 
+    sqrt ((x2-x1)^2.0 + (y2-y1)^2.0)
+
+
+-- POINTER helper
+
+relativePos : Pointer.Event -> ( Float, Float )
+relativePos event =
+  event.pointer.offsetPos
+
+
+-- VIEW
+
 view : Model -> Html Msg
 view model =
     let
@@ -1353,7 +1482,7 @@ view model =
                 , groundPlane = SketchPlane3d.xy
                 , azimuth = model.azimuth
                 , elevation = model.elevation
-                , distance = Length.meters 8
+                , distance = Length.meters model.distance
                 }
 
         camera =
@@ -1362,8 +1491,6 @@ view model =
                 , verticalFieldOfView = Angle.degrees 45
                 , clipDepth = Length.meters 0.1
                 }
-
-
         {-
         eye =
             vec3 (1 - 2 * 5 / 1024.0) -(1 - 2 * 6 / 768.0) 1
@@ -1409,6 +1536,21 @@ view model =
                             )
                         ]
                     else none
+                )
+            , inFront 
+                ( row 
+                    [ width fill
+                    , paddingXY 0 200
+                    , htmlAttribute (Touch.onStart  (touchList >> StartMoveList  ))
+                    , htmlAttribute (Touch.onMove   (touchList >> MoveList       ))
+                    , htmlAttribute (Touch.onCancel (touchList >> CancelMoveList ))
+                    , htmlAttribute (Touch.onEnd    (touchList >> EndMoveList    ))
+                    , htmlAttribute (Mouse.onDown   (.clientPos >> StartMove ))
+                    , htmlAttribute (Mouse.onMove   (.clientPos >> Move      ))
+                    , htmlAttribute (Mouse.onUp     (.clientPos >> EndMove   ))
+                    , pointer
+                    ]
+                    [ paragraph [centerX, centerY] [ text "Use one finger to rotate, or pinch to zoom"] ]
                 )
             , inFront 
                 ( row [ width fill, spacing 6, centerX ] {-html 
