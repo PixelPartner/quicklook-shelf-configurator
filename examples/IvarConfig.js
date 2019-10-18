@@ -9045,7 +9045,7 @@ var author$project$IvarConfig$init = function (flags) {
 	return _Utils_Tuple2(
 		{
 			aM: ianmackenzie$elm_units$Angle$degrees(235),
-			cq: 'http://quicklook.yourdomain.com',
+			cq: 'http://quicklook.ar-launchpad.com',
 			c: newBasket,
 			g: startColumn,
 			n: startSeed,
@@ -10484,7 +10484,7 @@ var author$project$IvarConfig$requestUSDZ = F3(
 						lukewestby$elm_http_builder$HttpBuilder$post(
 							A3(
 								elm$url$Url$Builder$crossOrigin,
-								base,
+								base + ':62703',
 								_List_fromArray(
 									['api', 'Model']),
 								_List_fromArray(
@@ -10494,7 +10494,7 @@ var author$project$IvarConfig$requestUSDZ = F3(
 										'uuid',
 										NoRedInk$elm_uuid$Prng$Uuid$toString(uuid)),
 										A2(elm$url$Url$Builder$string, 'productKey', 'SecretKey'),
-										A2(elm$url$Url$Builder$string, 'procedure', 'usda2z')
+										A2(elm$url$Url$Builder$string, 'procedure', 'usdatex2z')
 									])))))));
 	});
 var author$project$IvarConfig$touchDistance = F2(
@@ -12385,6 +12385,8 @@ var mdgriffith$elm_ui$Internal$Model$Top = 0;
 var mdgriffith$elm_ui$Element$alignTop = mdgriffith$elm_ui$Internal$Model$AlignY(0);
 var mdgriffith$elm_ui$Internal$Model$CenterX = 1;
 var mdgriffith$elm_ui$Element$centerX = mdgriffith$elm_ui$Internal$Model$AlignX(1);
+var mdgriffith$elm_ui$Internal$Model$CenterY = 1;
+var mdgriffith$elm_ui$Element$centerY = mdgriffith$elm_ui$Internal$Model$AlignY(1);
 var mdgriffith$elm_ui$Internal$Model$Height = function (a) {
 	return {$: 8, a: a};
 };
@@ -17725,6 +17727,23 @@ var mdgriffith$elm_ui$Element$downloadAs = F2(
 				_List_fromArray(
 					[label])));
 	});
+var mdgriffith$elm_ui$Element$el = F2(
+	function (attrs, child) {
+		return A4(
+			mdgriffith$elm_ui$Internal$Model$element,
+			mdgriffith$elm_ui$Internal$Model$asEl,
+			mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				elm$core$List$cons,
+				mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$shrink),
+				A2(
+					elm$core$List$cons,
+					mdgriffith$elm_ui$Element$height(mdgriffith$elm_ui$Element$shrink),
+					attrs)),
+			mdgriffith$elm_ui$Internal$Model$Unkeyed(
+				_List_fromArray(
+					[child])));
+	});
 var mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
 	return {$: 2, a: a};
 };
@@ -18064,8 +18083,28 @@ var mdgriffith$elm_ui$Element$layoutWith = F3(
 	});
 var mdgriffith$elm_ui$Element$layout = mdgriffith$elm_ui$Element$layoutWith(
 	{fk: _List_Nil});
-var mdgriffith$elm_ui$Internal$Model$Empty = {$: 3};
-var mdgriffith$elm_ui$Element$none = mdgriffith$elm_ui$Internal$Model$Empty;
+var mdgriffith$elm_ui$Element$paddingXY = F2(
+	function (x, y) {
+		return _Utils_eq(x, y) ? A2(
+			mdgriffith$elm_ui$Internal$Model$StyleClass,
+			mdgriffith$elm_ui$Internal$Flag$padding,
+			A5(
+				mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+				'p-' + elm$core$String$fromInt(x),
+				x,
+				x,
+				x,
+				x)) : A2(
+			mdgriffith$elm_ui$Internal$Model$StyleClass,
+			mdgriffith$elm_ui$Internal$Flag$padding,
+			A5(
+				mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+				'p-' + (elm$core$String$fromInt(x) + ('-' + elm$core$String$fromInt(y))),
+				y,
+				x,
+				y,
+				x));
+	});
 var mdgriffith$elm_ui$Internal$Flag$spacing = mdgriffith$elm_ui$Internal$Flag$flag(3);
 var mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
 	function (a, b, c) {
@@ -18117,6 +18156,7 @@ var mdgriffith$elm_ui$Internal$Model$Px = function (a) {
 	return {$: 0, a: a};
 };
 var mdgriffith$elm_ui$Element$px = mdgriffith$elm_ui$Internal$Model$Px;
+var mdgriffith$elm_ui$Element$rgba = mdgriffith$elm_ui$Internal$Model$Rgba;
 var mdgriffith$elm_ui$Internal$Model$AsRow = 0;
 var mdgriffith$elm_ui$Internal$Model$asRow = 0;
 var mdgriffith$elm_ui$Element$row = F2(
@@ -18142,6 +18182,24 @@ var mdgriffith$elm_ui$Internal$Model$Text = function (a) {
 };
 var mdgriffith$elm_ui$Element$text = function (content) {
 	return mdgriffith$elm_ui$Internal$Model$Text(content);
+};
+var mdgriffith$elm_ui$Internal$Flag$borderStyle = mdgriffith$elm_ui$Internal$Flag$flag(11);
+var mdgriffith$elm_ui$Element$Border$dashed = A2(mdgriffith$elm_ui$Internal$Model$Class, mdgriffith$elm_ui$Internal$Flag$borderStyle, mdgriffith$elm_ui$Internal$Style$classes.gz);
+var mdgriffith$elm_ui$Internal$Model$BorderWidth = F5(
+	function (a, b, c, d, e) {
+		return {$: 6, a: a, b: b, c: c, d: d, e: e};
+	});
+var mdgriffith$elm_ui$Element$Border$width = function (v) {
+	return A2(
+		mdgriffith$elm_ui$Internal$Model$StyleClass,
+		mdgriffith$elm_ui$Internal$Flag$borderWidth,
+		A5(
+			mdgriffith$elm_ui$Internal$Model$BorderWidth,
+			'b-' + elm$core$String$fromInt(v),
+			v,
+			v,
+			v,
+			v));
 };
 var mdgriffith$elm_ui$Element$Font$size = function (i) {
 	return A2(
@@ -21930,21 +21988,40 @@ var author$project$IvarConfig$view = function (model) {
 				[
 					mdgriffith$elm_ui$Element$inFront(
 					(model.aw !== '') ? A2(
-						mdgriffith$elm_ui$Element$row,
+						mdgriffith$elm_ui$Element$column,
 						_List_fromArray(
 							[
-								mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill),
-								mdgriffith$elm_ui$Element$padding(10)
+								mdgriffith$elm_ui$Element$width(
+								mdgriffith$elm_ui$Element$px(300)),
+								mdgriffith$elm_ui$Element$padding(10),
+								mdgriffith$elm_ui$Element$Background$color(
+								A4(mdgriffith$elm_ui$Element$rgba, 1, 1, 1, 1)),
+								mdgriffith$elm_ui$Element$centerY,
+								mdgriffith$elm_ui$Element$centerX,
+								mdgriffith$elm_ui$Element$Border$dashed,
+								mdgriffith$elm_ui$Element$Border$width(2),
+								mdgriffith$elm_ui$Element$Font$size(16),
+								author$project$IvarConfig$centerText,
+								mdgriffith$elm_ui$Element$pointer
 							]),
 						_List_fromArray(
 							[
+								A2(
+								mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[
+										mdgriffith$elm_ui$Element$alignTop,
+										mdgriffith$elm_ui$Element$alignRight,
+										mdgriffith$elm_ui$Element$Font$size(32)
+									]),
+								mdgriffith$elm_ui$Element$text('×')),
 								mdgriffith$elm_ui$Element$html(
 								A2(
 									elm$html$Html$div,
 									_List_fromArray(
 										[
-											A2(elm$html$Html$Attributes$style, 'width', '300px'),
-											A2(elm$html$Html$Attributes$style, 'height', '300px'),
+											A2(elm$html$Html$Attributes$style, 'width', '280px'),
+											A2(elm$html$Html$Attributes$style, 'height', '240px'),
 											elm$html$Html$Events$onClick(author$project$IvarConfig$ClearDownloadUrl)
 										]),
 									_List_fromArray(
@@ -21956,8 +22033,78 @@ var author$project$IvarConfig$view = function (model) {
 												elm$core$Result$map,
 												pablohirafuji$elm_qrcode$QRCode$toSvg,
 												pablohirafuji$elm_qrcode$QRCode$encode(model.aw)))
-										])))
-							])) : mdgriffith$elm_ui$Element$none),
+										]))),
+								A2(
+								mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[mdgriffith$elm_ui$Element$centerX]),
+								mdgriffith$elm_ui$Element$text('Scan this QRCode with an iPhone')),
+								A2(
+								mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[mdgriffith$elm_ui$Element$centerX]),
+								mdgriffith$elm_ui$Element$text('or iPad running iOS12 or newer.'))
+							])) : A2(
+						mdgriffith$elm_ui$Element$row,
+						_List_fromArray(
+							[
+								mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill),
+								A2(mdgriffith$elm_ui$Element$paddingXY, 50, 200),
+								mdgriffith$elm_ui$Element$htmlAttribute(
+								mpizenberg$elm_pointer_events$Html$Events$Extra$Touch$onStart(
+									A2(elm$core$Basics$composeR, author$project$IvarConfig$touchList, author$project$IvarConfig$StartMoveList))),
+								mdgriffith$elm_ui$Element$htmlAttribute(
+								mpizenberg$elm_pointer_events$Html$Events$Extra$Touch$onMove(
+									A2(elm$core$Basics$composeR, author$project$IvarConfig$touchList, author$project$IvarConfig$MoveList))),
+								mdgriffith$elm_ui$Element$htmlAttribute(
+								mpizenberg$elm_pointer_events$Html$Events$Extra$Touch$onCancel(
+									A2(elm$core$Basics$composeR, author$project$IvarConfig$touchList, author$project$IvarConfig$CancelMoveList))),
+								mdgriffith$elm_ui$Element$htmlAttribute(
+								mpizenberg$elm_pointer_events$Html$Events$Extra$Touch$onEnd(
+									A2(elm$core$Basics$composeR, author$project$IvarConfig$touchList, author$project$IvarConfig$EndMoveList))),
+								mdgriffith$elm_ui$Element$htmlAttribute(
+								mpizenberg$elm_pointer_events$Html$Events$Extra$Mouse$onDown(
+									A2(
+										elm$core$Basics$composeR,
+										function ($) {
+											return $.au;
+										},
+										author$project$IvarConfig$StartMove))),
+								mdgriffith$elm_ui$Element$htmlAttribute(
+								mpizenberg$elm_pointer_events$Html$Events$Extra$Mouse$onMove(
+									A2(
+										elm$core$Basics$composeR,
+										function ($) {
+											return $.au;
+										},
+										author$project$IvarConfig$Move))),
+								mdgriffith$elm_ui$Element$htmlAttribute(
+								mpizenberg$elm_pointer_events$Html$Events$Extra$Mouse$onUp(
+									A2(
+										elm$core$Basics$composeR,
+										function ($) {
+											return $.au;
+										},
+										author$project$IvarConfig$EndMove))),
+								mdgriffith$elm_ui$Element$pointer
+							]),
+						_List_fromArray(
+							[
+								A2(
+								mdgriffith$elm_ui$Element$paragraph,
+								_List_fromArray(
+									[
+										mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill),
+										mdgriffith$elm_ui$Element$height(mdgriffith$elm_ui$Element$fill),
+										mdgriffith$elm_ui$Element$centerX,
+										mdgriffith$elm_ui$Element$centerY,
+										author$project$IvarConfig$centerText
+									]),
+								_List_fromArray(
+									[
+										mdgriffith$elm_ui$Element$text('Use one finger to rotate, or pinch to zoom')
+									]))
+							]))),
 					mdgriffith$elm_ui$Element$inFront(
 					A2(
 						mdgriffith$elm_ui$Element$row,
@@ -22256,44 +22403,7 @@ var author$project$IvarConfig$view = function (model) {
 									]))
 							]))),
 					mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill),
-					mdgriffith$elm_ui$Element$alignLeft,
-					mdgriffith$elm_ui$Element$htmlAttribute(
-					mpizenberg$elm_pointer_events$Html$Events$Extra$Touch$onStart(
-						A2(elm$core$Basics$composeR, author$project$IvarConfig$touchList, author$project$IvarConfig$StartMoveList))),
-					mdgriffith$elm_ui$Element$htmlAttribute(
-					mpizenberg$elm_pointer_events$Html$Events$Extra$Touch$onMove(
-						A2(elm$core$Basics$composeR, author$project$IvarConfig$touchList, author$project$IvarConfig$MoveList))),
-					mdgriffith$elm_ui$Element$htmlAttribute(
-					mpizenberg$elm_pointer_events$Html$Events$Extra$Touch$onCancel(
-						A2(elm$core$Basics$composeR, author$project$IvarConfig$touchList, author$project$IvarConfig$CancelMoveList))),
-					mdgriffith$elm_ui$Element$htmlAttribute(
-					mpizenberg$elm_pointer_events$Html$Events$Extra$Touch$onEnd(
-						A2(elm$core$Basics$composeR, author$project$IvarConfig$touchList, author$project$IvarConfig$EndMoveList))),
-					mdgriffith$elm_ui$Element$htmlAttribute(
-					mpizenberg$elm_pointer_events$Html$Events$Extra$Mouse$onDown(
-						A2(
-							elm$core$Basics$composeR,
-							function ($) {
-								return $.au;
-							},
-							author$project$IvarConfig$StartMove))),
-					mdgriffith$elm_ui$Element$htmlAttribute(
-					mpizenberg$elm_pointer_events$Html$Events$Extra$Mouse$onMove(
-						A2(
-							elm$core$Basics$composeR,
-							function ($) {
-								return $.au;
-							},
-							author$project$IvarConfig$Move))),
-					mdgriffith$elm_ui$Element$htmlAttribute(
-					mpizenberg$elm_pointer_events$Html$Events$Extra$Mouse$onUp(
-						A2(
-							elm$core$Basics$composeR,
-							function ($) {
-								return $.au;
-							},
-							author$project$IvarConfig$EndMove))),
-					mdgriffith$elm_ui$Element$pointer
+					mdgriffith$elm_ui$Element$alignLeft
 				]),
 			_List_fromArray(
 				[

@@ -294,7 +294,7 @@ init flags =
       , lastError = Nothing
       , currentSeed = startSeed
       , currentUuid = Nothing
-      , baseUrl = "http://quicklook.yourdomain.com" -- change this to your own domain, running an instance of the USDZerve backend
+      , baseUrl = "http://quicklook.ar-launchpad.com" -- change this to your own domain, running an instance of the USDZerve backend
       , downloadUrl = ""
       , basket = newBasket 
       , world = populateWorld startColumn startSeed startDepth newBasket
@@ -434,13 +434,13 @@ update message model =
             ( { model 
               | currentUuid = Just newUuid
               , currentSeed = newSeed
-              , downloadUrl = (model.baseUrl++"/models/Sample.usdz") -- for testing
+              , downloadUrl = (model.baseUrl++"/models/Sample.usdz#allowContentScaling=0") -- for testing
               }
             , requestUSDZ model.baseUrl newUuid (exportScene model)
             )
 
         GotUrl (Ok url) ->
-            ( { model | downloadUrl = url }
+            ( { model | downloadUrl = url ++ "#allowContentScaling=0" }
             , Cmd.none
             )
 
@@ -1160,7 +1160,7 @@ requestUSDZ base uuid usda =
         [ "api", "Model" ]
         [ Url.Builder.string "uuid" (Uuid.toString uuid)
         , Url.Builder.string "productKey" "SecretKey" -- change this for your App
-        , Url.Builder.string "procedure" "usda2z" -- how the BODY content should be treated to create the USDZ arcive (i.e. convert ASCII to Crate and Zip with Texture(s))
+        , Url.Builder.string "procedure" "usdatex2z" -- how the BODY content should be treated to create the USDZ arcive (i.e. convert ASCII to Crate and Zip with Texture(s))
         ]
         |> HttpBuilder.post
         |> HttpBuilder.withStringBody "text/plain" usda
@@ -1518,13 +1518,19 @@ view model =
             [ inFront (
                 if model.downloadUrl /= ""
                     then 
-                    row 
-                        [ width fill, padding 10
+                    column 
+                        [ width (px 300), padding 10, Background.color (rgba 1 1 1 1)
+                        , centerY, centerX
+                        , Border.dashed, Border.width 2
+                        , Font.size 16
+                        , centerText
+                        , pointer
                         ]
-                        [ html (
+                        [ el [alignTop, alignRight, Font.size 32] (text "×")
+                        , html (
                             Html.div 
-                            [ Html.Attributes.style "width"  "300px"
-                            , Html.Attributes.style "height" "300px"
+                            [ Html.Attributes.style "width"  "280px"
+                            , Html.Attributes.style "height" "240px"
                             , onClick ClearDownloadUrl
                             ]
                             [ ( QRCode.encode model.downloadUrl
@@ -1534,23 +1540,27 @@ view model =
                                 )
                             ]
                             )
+                        , el [centerX] (text "Scan this QRCode with an iPhone")
+                        , el [centerX] (text "or iPad running iOS12 or newer.")
                         ]
-                    else none
-                )
-            , inFront 
-                ( row 
-                    [ width fill
-                    , paddingXY 0 200
-                    , htmlAttribute (Touch.onStart  (touchList >> StartMoveList  ))
-                    , htmlAttribute (Touch.onMove   (touchList >> MoveList       ))
-                    , htmlAttribute (Touch.onCancel (touchList >> CancelMoveList ))
-                    , htmlAttribute (Touch.onEnd    (touchList >> EndMoveList    ))
-                    , htmlAttribute (Mouse.onDown   (.clientPos >> StartMove ))
-                    , htmlAttribute (Mouse.onMove   (.clientPos >> Move      ))
-                    , htmlAttribute (Mouse.onUp     (.clientPos >> EndMove   ))
-                    , pointer
-                    ]
-                    [ paragraph [centerX, centerY] [ text "Use one finger to rotate, or pinch to zoom"] ]
+                    else
+                        ( row 
+                            [ width fill
+                            , paddingXY 50 200
+                            , htmlAttribute (Touch.onStart  (touchList >> StartMoveList  ))
+                            , htmlAttribute (Touch.onMove   (touchList >> MoveList       ))
+                            , htmlAttribute (Touch.onCancel (touchList >> CancelMoveList ))
+                            , htmlAttribute (Touch.onEnd    (touchList >> EndMoveList    ))
+                            , htmlAttribute (Mouse.onDown   (.clientPos >> StartMove ))
+                            , htmlAttribute (Mouse.onMove   (.clientPos >> Move      ))
+                            , htmlAttribute (Mouse.onUp     (.clientPos >> EndMove   ))
+                            , pointer
+                            ]
+                            [ paragraph 
+                                [ width fill, height fill, centerX, centerY, centerText ]
+                                [ text "Use one finger to rotate, or pinch to zoom"]
+                            ]
+                        )
                 )
             , inFront 
                 ( row [ width fill, spacing 6, centerX ] {-html 
@@ -1715,5 +1725,6 @@ main =
 
 
 -- C:\Apache24\bin\httpd.exe
--- cd examples; elm make IvarConfig.elm --optimize --output=C:\Apache24\htdocs\main.js
--- cd examples; elm make IvarConfig.elm --optimize --output=C:\inetpub\wwwroot\main.js
+-- cd examples; elm make IvarConfig.elm --optimize --output=C:\Apache24\htdocs\IvarConfig.js
+-- cd examples; elm make IvarConfig.elm --optimize --output=C:\inetpub\wwwroot\IvarConfig.js
+-- cd examples; elm make IvarConfig.elm --optimize --output=IvarConfig.js
