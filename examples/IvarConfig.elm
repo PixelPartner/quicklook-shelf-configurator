@@ -1157,7 +1157,7 @@ requestUSDZ : String -> Uuid.Uuid -> String -> Cmd Msg
 requestUSDZ base uuid usda =
     Url.Builder.crossOrigin
         base
-        [ "api", "Model" ]
+        [ "USDZerveApp", "api", "Model" ]
         [ Url.Builder.string "uuid" (Uuid.toString uuid)
         , Url.Builder.string "productKey" "SecretKey" -- change this for your App
         , Url.Builder.string "procedure" "usdatex2z" -- how the BODY content should be treated to create the USDZ arcive (i.e. convert ASCII to Crate and Zip with Texture(s))

@@ -10484,9 +10484,9 @@ var author$project$IvarConfig$requestUSDZ = F3(
 						lukewestby$elm_http_builder$HttpBuilder$post(
 							A3(
 								elm$url$Url$Builder$crossOrigin,
-								base + ':62703',
+								base,
 								_List_fromArray(
-									['api', 'Model']),
+									['USDZerveApp', 'api', 'Model']),
 								_List_fromArray(
 									[
 										A2(
@@ -10732,7 +10732,7 @@ var author$project$IvarConfig$update = F2(
 						{
 							n: newSeed,
 							dd: elm$core$Maybe$Just(newUuid),
-							aw: model.cq + '/models/Sample.usdz'
+							aw: model.cq + '/models/Sample.usdz#allowContentScaling=0'
 						}),
 					A3(
 						author$project$IvarConfig$requestUSDZ,
@@ -10745,7 +10745,7 @@ var author$project$IvarConfig$update = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{aw: url}),
+							{aw: url + '#allowContentScaling=0'}),
 						elm$core$Platform$Cmd$none);
 				} else {
 					var err = message.a.a;
