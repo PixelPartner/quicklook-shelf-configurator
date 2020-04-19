@@ -27,4 +27,4 @@ The elm WebApp lets you configure a shelf in a WebGL view. In any phase you can 
 # Feedback
 
 Any questions/feedback to this fork, please open an issue or reach out to **@pixelpartner**
-on the [Elm Slack](https://elmlang.herokuapp.com)!
+on the [Elm Slack](https://elmlang.herokuapp.com) or on [twitter](https://www.twitter.com/pixelpartner)!
